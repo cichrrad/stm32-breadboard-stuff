@@ -7,6 +7,9 @@ int main(void)
 {
 
     // Bit 0 enables clock for GPIOA
+    // clock must be enabled in order
+    // for reads/writes to the registers
+    // to have effect
     RCC_AHB2ENR |= (1 << 0);
 
     // Change Port A pin 5 (LED) mode to be:
