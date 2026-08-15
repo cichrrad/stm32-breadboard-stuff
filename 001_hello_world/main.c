@@ -1,4 +1,6 @@
 // mem layout from RM0440 
+
+// explicit uint32_t would be better
 #define RCC_AHB2ENR (*(volatile unsigned int *)0x4002104C) // Peripheral clock enable reg.
 #define GPIOA_MODER (*(volatile unsigned int *)0x48000000) // Port A pins mode reg.
 #define GPIOA_ODR (*(volatile unsigned int *)0x48000014)   // Port A pins output data reg.
