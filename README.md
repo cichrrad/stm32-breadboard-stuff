@@ -1,0 +1,3 @@
+# What is this?
+
+This is a repo of small projects, in which I try to incrementally grasp, learn, and deploy practices, skills, pipelines, and workflows related to embedded (bare-metal) developement in C. I made this for myself to document and be able to look back upon progression from basic things which may *work*, but are *wrong* in the context of safety-critical / embedded developement, and then adding onto those and refining them to learn how to write *production*-esque code in the context of safety-critical and embedded. I make things up as I go, but huge inspiration is [Equip Embedded on Youtube](https://www.youtube.com/@EquipEmbedded).
