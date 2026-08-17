@@ -21,4 +21,6 @@
 
 > If it does not work, try swapping LED ends. From what I understand, the length trick can be cap.
 
+---
+
 - [Photo of my setup](./IMG20260815133545.jpg)
