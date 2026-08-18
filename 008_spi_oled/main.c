@@ -184,7 +184,7 @@ int main(void) {
     OLED_DisplayFrame(frame);    
 
     while (1) {
-        delay_ms(500);
+        delay_ms(1000);
         OLED_FlipAllPixels();
     }
 }
