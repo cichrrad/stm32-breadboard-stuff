@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>128x64 Pixel Art Exporter</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: #1e1e2e;
+            color: #cdd6f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            margin: 0;
+        }
+        h1 {
+            margin-top: 0;
+            font-size: 24px;
+        }
+        .canvas-container {
+            border: 2px solid #45475a;
+            background-color: #ffffff;
+            image-rendering: pixelated; 
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            cursor: crosshair;
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #89b4fa;
+            color: #11111b;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #b4befe;
+        }
+        button.danger {
+            background-color: #f38ba8;
+        }
+        button.danger:hover {
+            background-color: #eba0ac;
+        }
+        textarea {
+            width: 100%;
+            max-width: 800px;
+            height: 250px;
+            background-color: #181825;
+            color: #a6e3a1;
+            border: 1px solid #45475a;
+            border-radius: 6px;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 14px;
+            resize: vertical;
+        }
+        .instructions {
+            margin-top: -10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #a6adc8;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>128x64 OLED Pixel Art Generator</h1>
+    <div class="instructions">
+        <strong>Left Click + Drag</strong>: Draw (Black) | <strong>Right Click + Drag</strong>: Erase (White)
+    </div>
+
+    <div class="canvas-container">
+        <canvas id="paintCanvas" width="768" height="384"></canvas>
+    </div>
+
+    <div class="controls">
+        <button id="btnClear" class="danger">Clear Canvas</button>
+        <button id="btnExport">Export C Array</button>
+    </div>
+
+    <textarea id="output" placeholder="Your C array will appear here..." readonly></textarea>
+
+    <script>
+        const WIDTH = 128;
+        const HEIGHT = 64;
+        const SCALE = 6; 
+        
+        const canvas = document.getElementById('paintCanvas');
+        const ctx = canvas.getContext('2d');
+        const output = document.getElementById('output');
+        
+        let pixels = new Uint8Array(WIDTH * HEIGHT);
+        let isDrawing = false;
+        let drawMode = 1; 
+
+        function clearCanvas() {
+            pixels.fill(0);
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+        clearCanvas();
+
+        function drawPixel(x, y, value) {
+            if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT) return;
+            pixels[y * WIDTH + x] = value;
+            ctx.fillStyle = value === 1 ? '#000000' : '#FFFFFF';
+            ctx.fillRect(x * SCALE, y * SCALE, SCALE, SCALE);
+        }
+
+        function handlePointerEvent(e) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            
+            const x = Math.floor(((e.clientX - rect.left) * scaleX) / SCALE);
+            const y = Math.floor(((e.clientY - rect.top) * scaleY) / SCALE);
+            
+            drawPixel(x, y, drawMode);
+        }
+
+        canvas.addEventListener('mousedown', (e) => {
+            isDrawing = true;
+            drawMode = e.button === 2 ? 0 : 1; 
+            handlePointerEvent(e);
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (isDrawing) {
+                handlePointerEvent(e);
+            }
+        });
+
+        window.addEventListener('mouseup', () => {
+            isDrawing = false;
+        });
+
+        canvas.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+        });
+
+        document.getElementById('btnClear').addEventListener('click', clearCanvas);
+
+        document.getElementById('btnExport').addEventListener('click', () => {
+            // Changed from const to static
+            let code = 'static uint8_t frame[1024] = {\n';
+            
+            for (let page = 0; page < 8; page++) {
+                code += '    ';
+                for (let col = 0; col < WIDTH; col++) {
+                    let byte = 0;
+                    for (let bit = 0; bit < 8; bit++) {
+                        const row = (page * 8) + bit;
+                        if (pixels[row * WIDTH + col] === 1) {
+                            byte |= (1 << bit);
+                        }
+                    }
+                    code += '0x' + byte.toString(16).padStart(2, '0').toUpperCase() + ', ';
+                }
+                code += '\n';
+            }
+            code += '};\n';
+            
+            output.value = code;
+        });
+    </script>
+</body>
+</html>
