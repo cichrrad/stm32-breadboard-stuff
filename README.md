@@ -1,3 +1,32 @@
 # What is this?
 
-This is a repo of small projects, in which I try to incrementally grasp, learn, and deploy practices, skills, pipelines, and workflows related to embedded (bare-metal) developement in C. I made this for myself to document and be able to look back upon progression from basic things which may *work*, but are *wrong* in the context of safety-critical / embedded developement, and then adding onto those and refining them to learn how to write *production*-esque code in the context of safety-critical and embedded. I make things up as I go, but huge inspiration is [Equip Embedded on Youtube](https://www.youtube.com/@EquipEmbedded).
+This is a repo of STM32 oriented breadboard-esque/fun projects to incrementally learn and graps the ways of embedded/bare-metal programming, mainly with C. 
+
+I made this for myself to document and be able to look back upon progression from basic things which may *work*, but are *wrong* in the context of safety-critical / embedded developement and such. 
+
+I make things up as I go, but huge inspirations are:
+
+* [Equip Embedded on Youtube](https://www.youtube.com/@EquipEmbedded)
+
+* [hodd._world on Youtube](https://www.youtube.com/@hoff._world)
+
+> Board I use -- STM32 NUCLEO G491RE
+
+## Overview
+
+The way I organize files is dynamic and ongoing, as of now it is:
+
+ 1. Projects are in numbered files `xxx_project_name`.
+ 2. Each project has `README.md` with notes which might explain some things or tie it in to previous project.
+ 3. `Include` and `Source` directories are for CMSIS headers + any generic drivers I might produce during the projects. Note that CMSIS headers are not used for the first projects, as part of me learning this stuff is ripping out HAL and all the fluff and seeing how it is done under the hood -- after a certain point, when I felt like I understand the structure overlay pattern used, I got the CMSIS headers because they are good *HAL*-esque include which makes code much clearer, while still being very much bare metal.
+ 4. Each project has its own `linker.ld`, `startup.c`, `main.c`, and `Makefile`. Based on the project, these might (will) vary (+ they changed overtime as I realized things here and there). For instance project needing interrupt handlers needs to extend interrupt vector in `startup.c` to accomodate them. Common pattern for `Makefile` is that you build with `make build` and flash with `make flash`.
+ 5. Projects with numbers less than 200 are reserved for *micro* projects, which are really small and often variations of few basic apps (blinky). These mainly serve for the incremental improvement -- ultimately doing the same thing or task (blinky), but better or in different ways to explore and improve stuff.
+ 6. Projects with number more than or 200 are reserved for more complex projects, combining different things together. I am on the fence still about moving *local* code outside to `Include` and `Source` dirs, because while a lot can be reused, I feel like it would get cluttered really quickly, while having it in the project directory makes it clear it is code for the project + you can do tweaks for that project without worry
+
+ ## Environment
+
+ To replicate my working conditions (SW-wise, for HW you have to source the board etc..), You can use devcontainers and vscode. `.devcontainer` dir is included, and working in it is exactly what I do. For additional dependencies specific for a project (for instance, some python modules for `201_bad_apple`), `README.md` and `Makefile` comments for that specific project should guide well enough, provided I don't get lazy.
+
+---
+
+ > Cheers! -RC
