@@ -3,6 +3,8 @@
 
 #define RX_BUF_SIZE 8240 // 8 frames worth of ring buffer
 
+#define TARGET_BAUD 1000000
+
 static volatile uint8_t rx_buffer[RX_BUF_SIZE];
 static uint32_t read_idx = 0;
 
@@ -26,7 +28,7 @@ void USART2_DMA_Init(uint32_t pclk_freq) {
 
     // Configure USART2 (1'000'000 baud, 8N1)
     USART2->CR1 &= ~USART_CR1_UE;               // Disable USART
-    USART2->BRR = pclk_freq / 1000000;          // Set Baudrate
+    USART2->BRR = pclk_freq / TARGET_BAUD;      // Set Baudrate
     USART2->CR3 |= USART_CR3_DMAR;              // Enable DMA Receiver
     USART2->CR1 |= USART_CR1_TE | USART_CR1_RE; // Enable TX, RX
     USART2->CR1 |= USART_CR1_UE;                // Enable USART
