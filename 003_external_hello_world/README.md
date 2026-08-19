@@ -23,4 +23,4 @@
 
 ---
 
-- [Photo of my setup](./IMG20260815133545.jpg)
+- ![Photo of my setup](./IMG20260815133545.jpg)

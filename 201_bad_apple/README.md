@@ -62,6 +62,11 @@ To make sure we dont try to send another frame, while mid-transfer of the previo
 2. Install Python dependencies (inside `venv` or not, I am not your mom): `pip install opencv-python-headless pyserial numpy`.
 3. Run `python3 streamer.py` to begin streaming the video.
 
+
+## DEMO
+
+![demo_video](./assets/bad_apple_demo.gif)
+
 ---
 
 ## Notes

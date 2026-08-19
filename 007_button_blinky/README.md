@@ -8,4 +8,4 @@
 
 ---
 
-- [Photo of my setup](IMG20260817180457.jpg)
+- ![Photo of my setup](IMG20260817180457.jpg)

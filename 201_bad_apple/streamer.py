@@ -7,7 +7,7 @@ import sys
 # DONT FORGET TO SAY "THANKS, GEMINI"
 
 # --- CONFIGURATION ---
-VIDEO_PATH = "./bad_apple.mp4"
+VIDEO_PATH = "./assets/bad_apple.mp4"
 COM_PORT = "/dev/ttyACM0"       # Change to ST-Link VCP port
 BAUD_RATE = 1000000             # Max ~1'000'000 for my board, MUST match the baud rate you divide with in usart_dma.c
 TARGET_FPS = 24.0
