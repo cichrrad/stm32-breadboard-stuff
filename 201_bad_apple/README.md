@@ -43,14 +43,12 @@ To make sure we dont try to send another frame, while mid-transfer of the previo
 
 ## Core Embedded Concepts
 
-This project abandons beginner concepts (like blocking `while` loops) in favor of professional paradigms:
-
 * **Deterministic Timing:** Replacing CPU-halting `__NOP()` loops with a 1ms SysTick interrupt for asynchronous state management.
 * **CPU as Orchestrator:** Utilizing the STM32G4's DMAMUX to handle raw data movement entirely in hardware, keeping CPU usage near zero.
 * **Double Buffering:** Allocating active RX and TX frame arrays in RAM and swapping pointers to completely eliminate screen tearing.
 * **Fault Tolerance:** Implementing packet structure and checksums to ensure that a dropped serial byte doesn't permanently corrupt the display alignment.
 
-## Getting Started
+## Setting it up
 
 **Hardware Pinout:**
 
