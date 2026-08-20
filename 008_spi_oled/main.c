@@ -100,29 +100,6 @@ void OLED_Init(void) {
     OLED_SendCommand(0xAF); // Display ON
 }
 
-void OLED_FillTestPattern(void) {
-    // A 128x64 display has 128 columns and 8 pages (rows of 8 vertical pixels)
-    // 128 * 8 = 1024 bytes total to fill the screen (1bit/pxl)
-    // Note: 128x16 stripe on top is yellow, rest is blue
-    for (int i = 0; i < 1024; i++) {
-        
-        if (i < 128*2){
-            OLED_SendData(0xFF);
-            last_frame[i]=0xFF; 
-        }
-        else{
-            if (i%2){
-                OLED_SendData(0xAA);
-                last_frame[i]=0xAA;  
-            }
-            else{
-                OLED_SendData(0x55);
-                last_frame[i]=0x55;  
-            }
-        }
-    }
-}
-
 void OLED_FlipAllPixels(){
     for (int i = 0; i < 1024; i++) {
         last_frame[i] ^= 0xFF;
@@ -184,7 +161,7 @@ int main(void) {
     OLED_DisplayFrame(frame);    
 
     while (1) {
-        delay_ms(1000);
+        delay_ms(10000);
         OLED_FlipAllPixels();
     }
 }

@@ -10,9 +10,10 @@ static uint8_t frame[1024];
 void EXTI0_IRQHandler(void) {
     // Check if the interrupt came from EXTI Line 0
     if ((EXTI->PR1 & EXTI_PR1_PIF0) != 0) {
-        // FEED THE DOG!
-        IWDG->KR = 0xAAAA; 
         
+        // FEED THE DOG!
+        IWDG->KR = 0xAAAA;
+
         // Clear the interrupt pending bit by writing a 1
         EXTI->PR1 |= EXTI_PR1_PIF0;
     }
@@ -240,7 +241,7 @@ int main(void) {
             
             // UNCOMMENT TO NOT HAVE TO FEED THE DOG
             // USING BUTTON
-            IWDG->KR = 0xAAAA; 
+            // IWDG->KR = 0xAAAA;
             
             start_time = GetTick();
         } 
