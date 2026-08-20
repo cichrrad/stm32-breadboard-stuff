@@ -5,7 +5,7 @@ static uint8_t last_frame[1024];
 // Rough delay for the reset sequence
 void delay_ms(volatile uint32_t ms) {
     // Note: Very rough, assumes ~16MHz default clock. 
-    // -> TODO: integrate 006 systick
+    // -> TODO?: integrate 006 systick :)
     ms *= 2000; 
     while(ms--) { __NOP(); }
 }
@@ -36,7 +36,7 @@ void SPI_SendByte(uint8_t data) {
     // Wait until Transmit buffer is empty
     while (!(SPI1->SR & SPI_SR_TXE));             
     // Make 8-bit write to Data Register
-    *(__IO uint8_t *)&SPI1->DR = data;            
+    *(volatile uint8_t *)&SPI1->DR = data;            
     // Wait until SPI is not busy
     while ((SPI1->SR & SPI_SR_BSY));              
 }
@@ -90,7 +90,7 @@ void OLED_Init(void) {
     OLED_SendCommand(0xA1); // Segment Re-map (Flips screen horizontally)
     
     OLED_SendCommand(0x81); // Set Contrast Control
-    OLED_SendCommand(0xCF); // Contrast value (0x00 to 0xFF)
+    OLED_SendCommand(0xFF); // Contrast value (0x00 to 0xFF)
     
     OLED_SendCommand(0xA6); // Normal Display (A7 would invert colors)
 

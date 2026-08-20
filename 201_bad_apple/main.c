@@ -66,8 +66,8 @@ void OLED_Init(void) {
     OLED_SendCommand(0xC8); // Flip Vertically
     OLED_SendCommand(0xA1); // Flip Horizontally
     OLED_SendCommand(0x81); // Contrast
-    OLED_SendCommand(0xCF); 
-    OLED_SendCommand(0xA6); // Normal Display
+    OLED_SendCommand(0xFF); 
+    OLED_SendCommand(0xA7); // Normal Display
     OLED_SendCommand(0x8D); // Charge pump
     OLED_SendCommand(0x14); 
     OLED_SendCommand(0xAF); // Display ON
