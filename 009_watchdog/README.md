@@ -6,7 +6,7 @@
 
 > Rest of the code making the button, SysTick, and OLED display work is band-aid horrid abomination glued from `007` (button),`008` (OLED), and `201` (SysTick). I mean, it does work, but is really messy in terms of code management, because I was glueing projects together.
 
-- Regarding `IWDG_Init` function - I had quite an issue of the watchdog now working, when I initialized it (via `IWDG->KR = 0xCCCC;`) after tweaking the rest of the things in the function. From discussion with Gemini, this is due to the fact that enabling the dog allows for sync between the MCU and watchdog, because IWDG stands for **I**ndependent **W**atch**d**o**g**. This means it is external and runs on its own timer (32kHz I believe), and this needs to sync up with system clock, so if you dont enable it first, you cannot set those things. There is also just plain WDG, which is internal to the MCU in the sense that it shares the same HW clock
+- Regarding `IWDG_Init` function - I had quite an issue of the watchdog not working when I initialized it (via `IWDG->KR = 0xCCCC;`) after tweaking the rest of the things in the function. From discussion with Gemini, this is due to the fact that enabling the dog allows for sync between the MCU and watchdog, because IWDG stands for **I**ndependent **W**atch**d**o**g**. This means it is external and runs on its own timer (32kHz I believe), and this needs to sync up with system clock, so if you dont enable it first, you cannot set those things. There is also just plain WDG, which is internal to the MCU in the sense that it shares the same HW clock
 
 
 ---
