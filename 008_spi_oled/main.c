@@ -64,10 +64,10 @@ void OLED_SendData(uint8_t data) {
 
 void OLED_Init(void) {
     // HW Reset sequence
-    // Unplug MOSI
+    // Toggle display OFF via RES wire
     GPIOC->BSRR = GPIO_BSRR_BR7;
     delay_ms(10);
-    // Plug MOSI
+    // Toggle ON
     GPIOC->BSRR = GPIO_BSRR_BS7;
     delay_ms(10);
 
@@ -126,8 +126,15 @@ int main(void) {
     GPIO_Init(GPIOA, 7, 2, 0, 2, 0); 
     
     // CS (PB6)   -- General Purpose Output (1)
+    // This gets pulled down to "select"
+    // the slave connected on this wire
+    // (we only have one CS wire so its easy)
     GPIO_Init(GPIOB, 6, 1, 0, 2, 0); 
     // DC (PA9)   -- General Purpose Output (1)
+    // This gets pulled down to signal
+    // the display incoming bytes are meant
+    // for its internal configuration rather
+    // than data to put onto the matrix
     GPIO_Init(GPIOA, 9, 1, 0, 2, 0);
     // RES (PC7)  -- General Purpose Output (1)
     GPIO_Init(GPIOC, 7, 1, 0, 2, 0);

@@ -8,7 +8,7 @@
 
 ### 1. D/C pin and configuring
 
-- Initialy, I thought you simply blast data via SPI with some format which the display will handle and show. In reality, you have to do initialization of the display, where you configure things such as addressing mode, ACTUAL resolution (I am assuming this is because the driver / actual hw driving the display is generic, so you need to tell it) of the screen, contrast and others... These can be seen being configured in `OLED_init`. This is done by just sending bytes to the display, BUT with the `D/C` wire being pulled down. This routes the byte to the display configuration, instead of displaying it as data. Notable configuration setting is the *charge pump* setting, which I had to enable, as it seems 3V3 wire from the MCU did not have enough juice to start the display (Suggested by Gemini, I am not an electrical engineer). After configuring it, it worked fine.
+- Initialy, I thought you simply blast data via SPI with some format which the display will handle and show. In reality, you have to do initialization of the display, where you configure things such as addressing mode, ACTUAL resolution (I am assuming this is because the driver / actual hw driving the display is generic, so you need to tell it) of the screen, contrast and others... These can be seen being configured in `OLED_init`. This is done by just sending bytes to the display, BUT with the `D/C` wire being pulled down. This routes the byte to the display configuration, instead of displaying it as data. Notable configuration setting is the *charge pump* setting, which I had to enable, as it seems that "pixels need higher voltage to excite organic material and emit light" to start the display (Suggested by Gemini, I am not an electrical engineer, seems logical though). After configuring it, it worked fine.
 
 ### 2. Display indexing
 
@@ -16,13 +16,17 @@
 
 - This must be respected and accounted for when sending the frame to be rendered.
 
+### 3. Note on CS
+
+- When sending data to the display, CS wire must also be pulled down. While it is technically not needed here, this is a standard SPI thing and must be done, because were we doing a project with multiple slaves, this would be the only wire exclusive to each one (they all share the rest of the pins, pulling CS wire down for a specific slave just tells him *Now YOU listen*).
+
 ## Frame drawing tool
 
 - To make creating frames to send easier, I had Gemini create basic pixel art drawing `html` site, you can open it in `./assets/art_drawer.html`.
 
 ## Main loop
 
-- This program simply flips the image you provide every ~10 seconds.
+- This program simply flips the image you provide every ~10 seconds. It uses image represented by `uint8_t` array `frame` sized at `1024` bytes (1 bit/pixel).
 
 ## Wiring it up
 
@@ -33,7 +37,7 @@
 | 3V3 (Power) | VCC |
 | MOSI/D11    | DIN |
 | SCK/D13     | CLK |
-| PWM/CS/D10  | CD  |
+| PWM/CS/D10  | CS  |
 | D8          | D/C |
 | PWM/D9      | RES |
 
