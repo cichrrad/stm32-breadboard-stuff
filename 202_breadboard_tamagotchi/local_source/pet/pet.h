@@ -37,6 +37,10 @@ typedef struct {
     uint8_t bored;
     uint8_t alone;
 
+    int8_t food_status_severity;
+    int8_t bored_status_severity;
+    int8_t alone_status_severity;
+
     uint8_t food_change_factor;
     uint8_t bored_change_factor;
     uint8_t alone_change_factor;

@@ -13,14 +13,14 @@ uint8_t get_bar_percentage(uint8_t val, uint8_t max_width)
     return (val / 50) * step;
 }
 
-void stat_bars_update(Pet p)
+void stat_bars_update(Pet *p)
 {
     dd_fill_rect(0, 16, DD_WIDTH, DD_HEIGHT - 16, true);
     dd_draw_bitmap(0, 0, UI_WIDTH, UI_HEIGHT, ui_banner, true);
 
-    dd_fill_rect(UI_FOOD_BAR_X, UI_FOOD_BAR_Y, get_bar_percentage(p.food, UI_FOOD_BAR_WIDTH), UI_FOOD_BAR_HEIGHT, false);
-    dd_fill_rect(UI_BORED_BAR_X, UI_BORED_BAR_Y, get_bar_percentage(p.bored, UI_BORED_BAR_WIDTH), UI_BORED_BAR_HEIGHT, false);
-    dd_fill_rect(UI_ALONE_BAR_X, UI_ALONE_BAR_Y, get_bar_percentage(p.alone, UI_ALONE_BAR_WIDTH), UI_ALONE_BAR_HEIGHT, false);
+    dd_fill_rect(UI_FOOD_BAR_X, UI_FOOD_BAR_Y, get_bar_percentage(p->food, UI_FOOD_BAR_WIDTH), UI_FOOD_BAR_HEIGHT, false);
+    dd_fill_rect(UI_BORED_BAR_X, UI_BORED_BAR_Y, get_bar_percentage(p->bored, UI_BORED_BAR_WIDTH), UI_BORED_BAR_HEIGHT, false);
+    dd_fill_rect(UI_ALONE_BAR_X, UI_ALONE_BAR_Y, get_bar_percentage(p->alone, UI_ALONE_BAR_WIDTH), UI_ALONE_BAR_HEIGHT, false);
 }
 
 int main(void)
@@ -47,13 +47,17 @@ int main(void)
         .bored = PET_MIN_STAT_VALUE,
         .alone = PET_MIN_STAT_VALUE,
 
+        .food_status_severity = 0,
+        .bored_status_severity = 0,
+        .alone_status_severity = 0,
+
         .food_change_factor = 50,
         .bored_change_factor = 50,
         .alone_change_factor = 50,
 
-        .food_change_time_ms = 1000,
-        .bored_change_time_ms = 1000,
-        .alone_change_time_ms = 1000,
+        .food_change_time_ms = 2700000,
+        .bored_change_time_ms = 900000,
+        .alone_change_time_ms = 1800000,
 
         .last_time_fed = 0,
         .last_time_played_with = 0,
@@ -63,21 +67,20 @@ int main(void)
 
         .emotion_array = miky_emotions,
         .currentEmotion = EMOTION_HAPPY,
-        .alive = true};
+        .alive = true
+    };
 
-    // State tracking variables
     while (1)
     {
-        Input_Update();
-        
-        Pet_updateStats(&Miky, &g_buttons);
-        Pet_transition(&Miky);
+        if (Miky.alive)
+        {
 
-        stat_bars_update(Miky);
-        dd_draw_bitmap(28, 16, MIKY_WIDTH, MIKY_HEIGHT, Miky.emotion_array[Miky.currentEmotion], true);
-        dd_update();
-
-        if (!Miky.alive)
-            return 0;
+            Input_Update();
+            Pet_updateStats(&Miky, &g_buttons);
+            Pet_transition(&Miky);
+            stat_bars_update(&Miky);
+            dd_draw_bitmap(28, 16, MIKY_WIDTH, MIKY_HEIGHT, Miky.emotion_array[Miky.currentEmotion], true);
+            dd_update();
+        }
     }
 }
