@@ -8,8 +8,8 @@ extern unsigned int _sbss;
 extern unsigned int _ebss;
 
 void Reset_Handler(void);
-void EXTI0_IRQHandler(void);
 void SysTick_Handler(void);
+void DMA1_Channel1_IRQHandler(void);
 
 int main(void);
 
@@ -28,7 +28,7 @@ void (*const vector_table[])(void) = {
     0,                          // 12: Debug Monitor
     0,                          // 13: Reserved
     0,                          // 14: PendSV
-    0,            // 15: SysTick Timer
+    SysTick_Handler,            // 15: SysTick Timer
     
     // --- Vendor Specific Interrupts (IRQs) ---
     0,                          // 16: IRQ0 (WWDG)
@@ -37,7 +37,12 @@ void (*const vector_table[])(void) = {
     0,                          // 19: IRQ3 (RTC_WKUP)
     0,                          // 20: IRQ4 (FLASH)
     0,                          // 21: IRQ5 (RCC)
-    0            // 22: IRQ6 (EXTI Line 0)
+    0,                          // 22: IRQ6 (EXTI Line 0)
+    0,
+    0,
+    0,
+    0,
+    DMA1_Channel1_IRQHandler
 };
 
 void Reset_Handler(void) {

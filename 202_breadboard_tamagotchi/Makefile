@@ -1,8 +1,8 @@
-OUT_NAME=display_driver
+OUT_NAME=bboard_tamagotchi
 
 SRCS := $(wildcard *.c) \
         $(shell find ../Source -name "*.c") \
-        $(shell find ./display_driver -name "*.c") \
+        $(shell find ./local_source -name "*.c") \
 
 INC_DIRS := $(shell find ../Include -type d)
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))

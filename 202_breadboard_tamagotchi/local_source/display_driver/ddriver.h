@@ -12,5 +12,10 @@
 
 extern uint8_t DD_FRAMEBUFFER[DD_FB_SIZE];
 
+void DD_Init();
+
 void dd_draw_bitmap(int x, int y, int width, int height, const uint8_t *bitmap, bool use_msb);
+void dd_fill_rect(int x, int y, int width, int height, bool state);
+
+void dd_update();
 #endif 
