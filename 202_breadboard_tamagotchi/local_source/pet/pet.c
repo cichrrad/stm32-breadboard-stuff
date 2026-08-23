@@ -207,6 +207,7 @@ void Pet_transition(Pet *p) {
         }
 
         p->currentEmotion = EMOTION_PINING;
+        return;
     
     }
 

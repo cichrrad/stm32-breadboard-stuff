@@ -8,6 +8,8 @@ TODO ACTUAL README :)
 
 ### Pictures
 
+> Forgot to record *Pining* emotion, because it was unreachable due to bug during timelapse recording :).
+
 * ![demo_1](./local_source/assets/demos/demo_excited.jpg)
 
 * ![demo_2](./local_source/assets/demos/demo_happy.jpg)
