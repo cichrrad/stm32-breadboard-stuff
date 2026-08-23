@@ -109,7 +109,7 @@ The game loop itself is rather simple. First we init all the peripherals and cre
 
 #### Display
 
-- I wired everything using the Arduino pins (Females) with the OLED display in 4-wire SPI mode (default) like so:
+I wired everything using the Arduino pins (Females) with the OLED display in 4-wire SPI mode (default) like so:
 
 | STM32 board pin label | OLED display pin label |
 | ----------- | ------------ |
