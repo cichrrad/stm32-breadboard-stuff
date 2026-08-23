@@ -66,3 +66,6 @@ Aim is to make it so that the code is modular and we are able to extend it rathe
 
 
 * **Pluggable Minigames:** When entering a state like `IN_GAME_RPC`, the core loop delegates framebuffer control and reassigns the input function pointers to an isolated minigame module until the game concludes.
+
+<video src="./local_source/assets/tamagothci_miky_timelapse.mp4" width="100%" controls>
+</video>
