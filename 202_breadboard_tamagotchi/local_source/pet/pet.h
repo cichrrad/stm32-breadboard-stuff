@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-#include "../input_driver/input_driver.h"
+#include "../tick_engine/systick_timer.h"
 
 // must be divisible by width of the UI bars (25)
 #define PET_MAX_STAT_VALUE 250
@@ -61,12 +61,12 @@ typedef struct {
     bool alive;
 } Pet;
 
-void Pet_updateStats(Pet* p, ButtonState* buttons);
+void Pet_UpdateStats(Pet* p);
 void Pet_Eat(Pet* p);
 void Pet_Play(Pet* p);
 void Pet_Pet(Pet* p);
 
-void Pet_transition(Pet* p);
+void Pet_Transition(Pet* p);
 
 
 #endif

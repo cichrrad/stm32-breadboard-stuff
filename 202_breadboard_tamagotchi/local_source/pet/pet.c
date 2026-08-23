@@ -1,25 +1,7 @@
 #include "pet.h"
-#include "../tick_engine/systick_timer.h"
 
-void Pet_updateStats(Pet *p, ButtonState *buttons)
+void Pet_UpdateStats(Pet *p)
 {
-
-    // Check buttons and tweak stats based on it
-    if (buttons->feed_flag)
-    {
-        buttons->feed_flag = false;
-        Pet_Eat(p);
-    }
-    if (buttons->pet_flag)
-    {
-        buttons->pet_flag = false;
-        Pet_Pet(p);
-    }
-    if (buttons->play_flag)
-    {
-        buttons->play_flag = false;
-        Pet_Play(p);
-    }
 
     // Decay stats if untreated
     if (SysTick_IsElapsed(p->last_time_fed, p->food_change_time_ms))
@@ -98,7 +80,7 @@ void Pet_Pet(Pet *p) {
 }
 
 
-void Pet_transition(Pet *p) {
+void Pet_Transition(Pet *p) {
     
     // starved to death 
     if(p->food == PET_MIN_STAT_VALUE){

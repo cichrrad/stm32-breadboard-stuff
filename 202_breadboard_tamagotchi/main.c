@@ -32,16 +32,6 @@ int main(void)
     DD_Init();
     Input_Init();
 
-    // Draw the initial static UI layout
-    dd_fill_rect(0, 16, DD_WIDTH, DD_HEIGHT - 16, true);
-    dd_draw_bitmap(0, 0, UI_WIDTH, UI_HEIGHT, ui_banner, true);
-    // Push the initial frame to the display and swap buffers
-    dd_update();
-    // Same for second buffer
-    dd_fill_rect(0, 16, DD_WIDTH, DD_HEIGHT - 16, true);
-    dd_draw_bitmap(0, 0, UI_WIDTH, UI_HEIGHT, ui_banner, true);
-    dd_update();
-
     Pet Miky = {
         .food = PET_MAX_STAT_VALUE,
         .bored = PET_MIN_STAT_VALUE,
@@ -67,8 +57,7 @@ int main(void)
 
         .emotion_array = miky_emotions,
         .currentEmotion = EMOTION_HAPPY,
-        .alive = true
-    };
+        .alive = true};
 
     while (1)
     {
@@ -76,11 +65,29 @@ int main(void)
         {
 
             Input_Update();
-            Pet_updateStats(&Miky, &g_buttons);
-            Pet_transition(&Miky);
+            // Check buttons and tweak stats based on it
+            if (g_buttons.feed_flag)
+            {
+                g_buttons.feed_flag = false;
+                Pet_Eat(&Miky);
+            }
+            if (g_buttons.pet_flag)
+            {
+                g_buttons.pet_flag = false;
+                Pet_Pet(&Miky);
+            }
+            if (g_buttons.play_flag)
+            {
+                g_buttons.play_flag = false;
+                Pet_Play(&Miky);
+            }
+            
+            Pet_UpdateStats(&Miky);
+            Pet_Transition(&Miky);
             stat_bars_update(&Miky);
             dd_draw_bitmap(28, 16, MIKY_WIDTH, MIKY_HEIGHT, Miky.emotion_array[Miky.currentEmotion], true);
             dd_update();
         }
+        __WFI();
     }
 }

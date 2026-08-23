@@ -10,8 +10,6 @@
 
 #define DD_FB_SIZE ((DD_WIDTH*DD_HEIGHT) / DD_PIXELS_PER_BYTE) 
 
-extern uint8_t DD_FRAMEBUFFER[DD_FB_SIZE];
-
 void DD_Init();
 
 void dd_draw_bitmap(int x, int y, int width, int height, const uint8_t *bitmap, bool use_msb);
