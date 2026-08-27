@@ -1,7 +1,7 @@
 #include "oled_hw.h"
 #include "device_headers/stm32g491xx.h"
 #include "device_drivers/gpio.h"
-#include "../tick_engine/systick_timer.h"
+#include "device_drivers/tick_engine/systick_timer.h"
 
 volatile bool dma_busy = false;
 
