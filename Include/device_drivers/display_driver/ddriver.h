@@ -29,4 +29,18 @@ void dd_write_letter(int x, int y, char c, bool state, bool force_bg_clear);
 void dd_write_string(int x, int y, const char *str, bool state, bool force_bg_clear);
 
 void dd_update();
+
+typedef struct 
+{
+    uint8_t x;
+    uint8_t y;
+    uint8_t width;
+    uint8_t height;
+    uint8_t val;
+    uint8_t steps;
+    bool active_equals_on;    
+} DDLoadBarType;
+
+void dd_loadbar_set_val(DDLoadBarType* lbar);
+
 #endif 

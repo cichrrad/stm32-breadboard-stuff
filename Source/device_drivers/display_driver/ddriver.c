@@ -260,3 +260,7 @@ void dd_update()
     // Swap the draw buffer for the NEXT frame
     draw_buffer = (draw_buffer == buffer_A) ? buffer_B : buffer_A;
 }
+
+void dd_loadbar_set_val(DDLoadBarType *lbar)
+{
+}
