@@ -13,7 +13,12 @@
 void DD_Init();
 
 void dd_draw_bitmap(int x, int y, int width, int height, const uint8_t *bitmap, bool use_msb);
+
 void dd_fill_rect(int x, int y, int width, int height, bool state);
+void dd_fill_circle(int x,int y, int radius, bool state);
+
+void dd_draw_rect(int x, int y, int width, int height, bool state);
+void dd_draw_circle(int x,int y, int radius, bool state);
 
 void dd_update();
 #endif 

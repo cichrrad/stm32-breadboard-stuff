@@ -10,7 +10,10 @@ int main(void){
     SysTick_Init(16000000);
     DD_Init();
     dd_fill_rect(0,0,DD_WIDTH,DD_HEIGHT,true);
-    dd_draw_bitmap(28,16,MIKY_WIDTH,MIKY_HEIGHT,miky,true);
+
+    dd_draw_circle(64,32,32,false);
+
+    dd_fill_circle(64,32,26,false);
 
     dd_update();
 
