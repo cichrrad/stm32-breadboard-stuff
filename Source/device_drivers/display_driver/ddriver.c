@@ -1,6 +1,7 @@
 #include "ddriver.h"
 #include "oled_hw.h"
-#include "utils/int_sqrt.h"
+#include "utils/utils_math.h"
+#include "device_drivers/display_driver/fonts.h"
 
 static uint8_t buffer_A[DD_FB_SIZE] = {0};
 static uint8_t buffer_B[DD_FB_SIZE] = {0};
@@ -65,6 +66,34 @@ void dd_draw_bitmap(int x, int y, int width, int height, const uint8_t *bitmap, 
     }
 }
 
+// https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
+void dd_draw_line(int ax, int ay, int bx, int by, bool state)
+{
+    int dx = abs(bx - ax);
+    int dy = -abs(by - ay);
+    int sx = ax < bx ? 1 : -1;
+    int sy = ay < by ? 1 : -1;
+    int err = dx + dy;
+
+    while (true)
+    {
+        dd_set_pixel(ax, ay, state);
+        if (ax == bx && ay == by)
+            break;
+        int e2 = 2 * err;
+        if (e2 >= dy)
+        {
+            err += dy;
+            ax += sx;
+        }
+        if (e2 <= dx)
+        {
+            err += dx;
+            ay += sy;
+        }
+    }
+}
+
 void dd_fill_rect(int x, int y, int width, int height, bool state)
 {
     for (int curr_y = y; curr_y < y + height; curr_y++)
@@ -98,7 +127,7 @@ void dd_fill_circle(int x, int y, int radius, bool state)
 
 void dd_draw_circle(int x, int y, int radius, bool state)
 {
-        // calculate top-left corner from center [x,y]
+    // calculate top-left corner from center [x,y]
     int cornerX = x - radius;
     int cornerY = y - radius;
 
@@ -115,6 +144,37 @@ void dd_draw_circle(int x, int y, int radius, bool state)
     }
 }
 
+void dd_draw_triangle(int ax, int ay, int bx, int by, int cx, int cy, bool state)
+{
+    dd_draw_line(ax,ay,bx,by,state);
+    dd_draw_line(bx,by,cx,cy,state);
+    dd_draw_line(cx,cy,ax,ay,state);
+}
+
+void dd_fill_triangle(int ax, int ay, int bx, int by, int cx, int cy, bool state)
+{
+    int minX = min3(ax, bx, cx);
+    int minY = min3(ay, by, cy);
+    int maxX = max3(ax, bx, cx);
+    int maxY = max3(ay, by, cy);
+
+    // Scan bounding box and check edge functions
+    for (int y = minY; y <= maxY; y++) {
+        for (int x = minX; x <= maxX; x++) {
+            
+            int w0 = (bx - ax) * (y - ay) - (by - ay) * (x - ax);
+            int w1 = (cx - bx) * (y - by) - (cy - by) * (x - bx);
+            int w2 = (ax - cx) * (y - cy) - (ay - cy) * (x - cx);
+
+            // If signs match (all positive or all negative), pixel is inside
+            if ((w0 >= 0 && w1 >= 0 && w2 >= 0) || (w0 <= 0 && w1 <= 0 && w2 <= 0)) {
+                dd_set_pixel(x, y, state);
+            }
+        }
+    }
+}
+
+// TODO: use draw_line now that we have it 
 void dd_draw_rect(int x, int y, int width, int height, bool state)
 {
     // draw horizontal lines
@@ -136,6 +196,57 @@ void dd_draw_rect(int x, int y, int width, int height, bool state)
     }
 }
 
+void dd_write_letter(int x, int y, char c, bool state, bool force_bg_clear)
+{
+
+    if (c < LOCHAR || c > HICHAR)
+    {
+        c = '?'; // Fallback for unsupported characters
+    }
+
+    // starting index of the character in the array
+    int font_idx = c - LOCHAR;
+
+    // Loop through the height of the character
+    for (int row = 0; row < FONT_HEIGHT; row++)
+    {
+        char row_data = FONT[font_idx][row];
+
+        // Loop through the width of the character
+        // NOTE: Defining width for each char to not
+        // have to do spaced out mono font would be better
+        for (int col = 0; col < 8; col++)
+        {
+            bool draw_pixel = (row_data >> col) & 0x01;
+
+            if (draw_pixel)
+            {
+                dd_set_pixel(x + col, y + row, state);
+            }
+            else
+            {
+                // toggle bg for contrast
+                if (force_bg_clear)
+                {
+                    dd_set_pixel(x + col, y + row, !state);
+                }
+            }
+        }
+    }
+}
+
+void dd_write_string(int x, int y, const char *str, bool state, bool force_bg_clear)
+{
+    int curr_x = x;
+    while (*str) // loop till \0
+    {
+        dd_write_letter(curr_x, y, *str, state, force_bg_clear);
+
+        // Advance X by 8 pixels for the next character
+        curr_x += (FONT_BWIDTH * 8);
+        str++;
+    }
+}
 
 void dd_update()
 {

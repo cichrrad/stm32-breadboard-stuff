@@ -1,4 +1,4 @@
-#include "int_sqrt.h"
+#include "utils_math.h"
 
 uint32_t int_sqrt(uint32_t num)
 {
@@ -25,4 +25,39 @@ uint32_t int_sqrt(uint32_t num)
         bit >>= 2;
     }
     return res;
+}
+
+uint32_t abs(int32_t v)
+{
+    return v < 0 ? -v : v;
+}
+
+int32_t max3(int32_t a, int32_t b, int32_t c)
+{
+    if (a >= b){
+        if (a >=c){
+            return a;
+        }
+        return c;
+    }
+    
+    if (b >= c){
+        return b;
+    }
+    return c;
+}
+
+int32_t min3(int32_t a, int32_t b, int32_t c)
+{
+    if (a <= b){
+        if (a <=c){
+            return a;
+        }
+        return c;
+    }
+    
+    if (b <= c){
+        return b;
+    }
+    return c;
 }

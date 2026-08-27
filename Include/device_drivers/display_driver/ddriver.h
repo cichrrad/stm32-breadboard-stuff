@@ -14,11 +14,19 @@ void DD_Init();
 
 void dd_draw_bitmap(int x, int y, int width, int height, const uint8_t *bitmap, bool use_msb);
 
+void dd_draw_line(int ax, int ay, int bx, int by, bool state);
+
 void dd_fill_rect(int x, int y, int width, int height, bool state);
 void dd_fill_circle(int x,int y, int radius, bool state);
 
 void dd_draw_rect(int x, int y, int width, int height, bool state);
 void dd_draw_circle(int x,int y, int radius, bool state);
+
+void dd_draw_triangle(int ax, int ay, int bx, int by, int cx, int xy, bool state);
+void dd_fill_triangle(int ax, int ay, int bx, int by, int cx, int xy, bool state);
+
+void dd_write_letter(int x, int y, char c, bool state, bool force_bg_clear);
+void dd_write_string(int x, int y, const char *str, bool state, bool force_bg_clear);
 
 void dd_update();
 #endif 
