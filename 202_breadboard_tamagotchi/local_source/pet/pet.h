@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-#include "../tick_engine/systick_timer.h"
+#include "device_drivers/tick_engine/systick_timer.h"
 
 // must be divisible by width of the UI bars (25)
 #define PET_MAX_STAT_VALUE 250

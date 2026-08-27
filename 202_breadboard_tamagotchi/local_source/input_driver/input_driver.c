@@ -1,6 +1,6 @@
 #include "input_driver.h"
 #include "device_headers/stm32g491xx.h"
-#include "../tick_engine/systick_timer.h"
+#include "device_drivers/tick_engine/systick_timer.h"
 
 ButtonState g_buttons = {false, false, false};
 

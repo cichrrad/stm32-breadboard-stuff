@@ -1,6 +1,7 @@
 #include "device_drivers/gpio.h"
-#include "local_source/display_driver/ddriver.h"
-#include "local_source/tick_engine/systick_timer.h"
+#include "device_drivers/display_driver/ddriver.h"
+#include "device_drivers/tick_engine/systick_timer.h"
+
 #include "local_source/input_driver/input_driver.h"
 #include "local_source/pet/pet.h"
 
