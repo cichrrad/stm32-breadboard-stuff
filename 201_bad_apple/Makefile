@@ -1,7 +1,8 @@
 OUT_NAME=bad_apple
 
 SRCS := $(wildcard *.c) \
-        $(shell find ../Source -name "*.c")
+        ../Source/device_drivers/*.c \
+		../Source/device_drivers/tick_engine/*.c
 
 INC_DIRS := $(shell find ../Include -type d)
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))

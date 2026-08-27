@@ -1,8 +1,8 @@
 OUT_NAME=watchdog
 
 SRCS := $(wildcard *.c) \
-        $(shell find ../Source -name "*.c")
-
+        ../Source/device_drivers/tick_engine/*.c \
+		../Source/device_drivers/gpio.c 
 INC_DIRS := $(shell find ../Include -type d)
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 

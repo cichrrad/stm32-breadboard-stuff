@@ -2,7 +2,7 @@ OUT_NAME=systick_blinky
 BAUD_RATE=115200
 
 SRCS := $(wildcard *.c) \
-        $(shell find ../Source -name "*.c")
+		../Source/device_drivers/*.c
 
 INC_DIRS := $(shell find ../Include -type d)
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))

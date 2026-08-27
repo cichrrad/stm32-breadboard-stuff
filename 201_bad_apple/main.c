@@ -1,6 +1,6 @@
 #include "device_headers/stm32g491xx.h"
 #include "device_drivers/gpio.h"
-#include "systick_timer.h"
+#include "device_drivers/tick_engine/systick_timer.h"
 #include "spi_dma.h"
 #include "usart_dma.h"
 
@@ -11,11 +11,6 @@
 static uint8_t frame_A[1024];
 static uint8_t frame_B[1024];
 
-// Blocking delay using SysTick for display init
-void delay_ms(volatile uint32_t ms) {
-    uint32_t start = GetTick();
-    while (!SysTick_IsElapsed(start, ms)) { __NOP(); }
-}
 
 void SPI_Init(void) {                                   
     RCC->APB2ENR |= RCC_APB2ENR_SPI1EN;
