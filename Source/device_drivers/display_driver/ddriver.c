@@ -261,6 +261,38 @@ void dd_update()
     draw_buffer = (draw_buffer == buffer_A) ? buffer_B : buffer_A;
 }
 
-void dd_loadbar_set_val(DDLoadBarType *lbar)
+void dd_loadbar_render_value(DDLoadBarType *lbar){
+    
+    //clear
+    dd_fill_rect(lbar->x+1,lbar->y+1,lbar->width-1,lbar->height-1,!(lbar->active_equals_on));
+    
+    if(lbar->val == 0){
+        return;
+    }
+    
+    uint8_t step_size = lbar->width/lbar->steps;
+    uint8_t step_val = 250/lbar->steps;
+    uint8_t step_count = 0;
+    for (int i = 0; i < lbar->steps; i++){
+        if (lbar->val >= i*step_val){
+            step_count++;
+        }
+    }
+
+    // render value
+    dd_fill_rect(lbar->x+1,lbar->y+1,step_size*step_count,lbar->height-1,lbar->active_equals_on);
+
+}
+
+void dd_loabdar_set_value(DDLoadBarType *lbar,uint8_t val){
+    lbar->val=val;
+}
+
+void dd_draw_loadbar(DDLoadBarType *lbar)
 {
+    // load bar frame
+    dd_draw_rect(lbar->x,lbar->y,lbar->width,lbar->height,lbar->active_equals_on);
+    dd_loadbar_render_value(lbar);
+
+
 }

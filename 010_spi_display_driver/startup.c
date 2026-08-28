@@ -9,6 +9,7 @@ extern unsigned int _ebss;
 
 void Reset_Handler(void);
 void SysTick_Handler(void);
+void DMA1_Channel1_IRQHandler(void);
 
 int main(void);
 
@@ -40,7 +41,8 @@ void (*const vector_table[])(void) = {
     0,
     0,
     0,
-    0
+    0,
+    DMA1_Channel1_IRQHandler
 };
 
 void Reset_Handler(void) {

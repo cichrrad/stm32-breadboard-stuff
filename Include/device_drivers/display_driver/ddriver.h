@@ -30,6 +30,7 @@ void dd_write_string(int x, int y, const char *str, bool state, bool force_bg_cl
 
 void dd_update();
 
+// TODO asser all these play along nicely
 typedef struct 
 {
     uint8_t x;
@@ -41,6 +42,7 @@ typedef struct
     bool active_equals_on;    
 } DDLoadBarType;
 
-void dd_loadbar_set_val(DDLoadBarType* lbar);
+void dd_draw_loadbar(DDLoadBarType* lbar);
+void dd_loabdar_set_value(DDLoadBarType *lbar,uint8_t val);
 
 #endif 
