@@ -21,15 +21,22 @@ void I2C1_Init(void)
 
 void I2C1_ReadRegisters(uint8_t reg, uint8_t *buffer, uint8_t length)
 {
-    // Send the register address we want to read from
+    // Trigger START condition, so the sensor
+    // knows we want to tell him where to
+    // read data from
     I2C1->CR2 = (0x76 << 1) | (1 << 16) | I2C_CR2_START;
+    
     while (!(I2C1->ISR & I2C_ISR_TXIS))
-        ;
+    ;
+    // Send the register address we want to read from
     I2C1->TXDR = reg;
     while (!(I2C1->ISR & I2C_ISR_TC))
         ; // Wait for Transfer Complete
 
-    // Read 'length' bytes back using AUTOEND
+    // Specify we want
+    // 'length' bytes back from our
+    // specified starting reg
+    // (AUTOEND will result in STOP flag being set after transfer)
     I2C1->CR2 = (0x76 << 1) | (length << 16) | I2C_CR2_RD_WRN | I2C_CR2_START | I2C_CR2_AUTOEND;
 
     for (uint8_t i = 0; i < length; i++)
@@ -39,7 +46,7 @@ void I2C1_ReadRegisters(uint8_t reg, uint8_t *buffer, uint8_t length)
         buffer[i] = I2C1->RXDR;
     }
 
-    // Wait for the automatic STOP condition to finish, then clear the flag
+    // Wait for automatic STOP set, then clear the flag
     while (!(I2C1->ISR & I2C_ISR_STOPF))
         ;
     I2C1->ICR |= I2C_ICR_STOPCF;
@@ -69,23 +76,6 @@ void BME280_Start(void)
     I2C1_WriteRegister(0xF2, 0x01);
     // 1x Oversampling Temp/Press, Normal Mode (0x03)
     I2C1_WriteRegister(0xF4, 0x27);
-}
-
-uint8_t BME280_ReadID(void)
-{
-    // Send register address (0xD0) to sensor address (0x76)
-    I2C1->CR2 = (0x76 << 1) | (1 << 16) | I2C_CR2_START;
-    while (!(I2C1->ISR & I2C_ISR_TXIS))
-        ;
-    I2C1->TXDR = 0xD0;
-    while (!(I2C1->ISR & I2C_ISR_TC))
-        ;
-
-    // Read 1 byte back
-    I2C1->CR2 = (0x76 << 1) | (1 << 16) | I2C_CR2_RD_WRN | I2C_CR2_START;
-    while (!(I2C1->ISR & I2C_ISR_RXNE))
-        ;
-    return I2C1->RXDR;
 }
 
 BME280_CalibData bme_calib;

@@ -75,13 +75,6 @@ int main(void)
         .fill_state = true,
         .solid_bg = true};
 
-    UITextType id = {
-        .x = 64,
-        .y = 1,
-        .val = "id",
-        .fill_state = true,
-        .solid_bg = true};
-
     UITextType temp = {
         .x = 1,
         .y = 20,
@@ -102,14 +95,6 @@ int main(void)
         .val = "humid",
         .fill_state = true,
         .solid_bg = true};
-
-    uint8_t sensor_id = BME280_ReadID();
-    char id_str[] = "ID: 0x00";
-    // Convert the hex nibbles to ASCII characters
-    uint8_t high_nibble = (sensor_id >> 4) & 0x0F;
-    uint8_t low_nibble = sensor_id & 0x0F;
-    id_str[6] = (high_nibble < 10) ? ('0' + high_nibble) : ('A' + (high_nibble - 10));
-    id_str[7] = (low_nibble < 10) ? ('0' + low_nibble) : ('A' + (low_nibble - 10));
 
     uint32_t last_tick_ui_update = GetTick();
     bool flip = false;
@@ -137,7 +122,6 @@ int main(void)
             format_sensor_data(p_str, "P: ", press_val, " hPa");
             format_sensor_data(h_str, "H: ", hum_base100, " %");
 
-            ui_draw_string(&id, id_str);
             ui_draw_string(&temp, t_str);
             ui_draw_string(&pressure, p_str);
             ui_draw_string(&humid, h_str);

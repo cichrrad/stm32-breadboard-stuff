@@ -2,6 +2,9 @@
 #define I2C_SENSOR_H
 #include <stdint.h>
 
+
+void I2C1_Init(void);
+
 typedef struct {
     uint16_t dig_T1; int16_t dig_T2; int16_t dig_T3;
     uint16_t dig_P1; int16_t dig_P2; int16_t dig_P3; 
@@ -13,9 +16,6 @@ typedef struct {
 
 extern BME280_CalibData bme_calib;
 
-void I2C1_Init(void);
-
-uint8_t BME280_ReadID(void);
 void BME280_ReadCalibration(void);
 void BME280_Start(void);
 void BME280_ReadData(int32_t *temp, uint32_t *press, uint32_t *hum);
