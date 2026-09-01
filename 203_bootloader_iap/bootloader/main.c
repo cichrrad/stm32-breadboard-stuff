@@ -125,6 +125,7 @@ int main(void)
         ui_draw_string(&text2, "WRITING FLASH...");
         dd_update();
 
+
         extern volatile uint32_t bytes_received; 
         
         if (Flash_Write_App(rx_buffer, bytes_received)) {
@@ -139,7 +140,6 @@ int main(void)
             while(1); // Halt on critical flash error
         }
         
-        delay_ms(5000);
     }
 
     jump_to_app(); // we hope to never return from this
