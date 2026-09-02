@@ -40,10 +40,21 @@ bool jump_to_app(void)
         NVIC->ICPR[i] = 0xFFFFFFFF;
     }
 
+    // Assembly to reset main stack pointer to the start of the
+    // app
     __asm volatile("MSR msp, %0" : : "r"(app_stack_pointer) :);
+    // Call reset handler of the app to run its routine before
+    // it enters its main
+
+    // (in this routine, in addition to zeroing of ram etc,
+    //  app must itself reconfigure address of
+    // the interrupt vector table to point to its own, otherwise
+    // next time interrupt fires, it would be serviced with bootloaders
+    // table)
     app_reset_handler();
 
-    return true; // this should never trigger
+    // this should never trigger
+    return true;
 }
 
 int main(void)
@@ -100,7 +111,8 @@ int main(void)
         if (Button_IsPressed())
         {
             update_requested = true;
-            break; // Exit the 6-second grace period
+            // Exit the 6-second grace period
+            break; 
         }
 
         __WFI();
@@ -137,12 +149,14 @@ int main(void)
             dd_clear();
             ui_draw_string(&text1, "FLASH FAILED!");
             dd_update();
-            while(1); // Halt on critical flash error
+            // Halt on critical flash error
+            while(1); 
         }
         
     }
 
-    jump_to_app(); // we hope to never return from this
+    // we hope to never return from this
+    jump_to_app(); 
     
     // Failed to load app
     while (1)

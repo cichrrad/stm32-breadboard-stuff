@@ -4,7 +4,7 @@
 // Flash starts at 0x08000000. App is at 0x08008000.
 // 0x8000 / 2048 bytes per page = Page 16.
 #define APP_START_PAGE 16 
-#define APP_ADDRESS 0x08008000 //[cite: 3]
+#define APP_ADDRESS 0x08008000
 
 bool Flash_Write_App(uint8_t *data, uint32_t length) {
     // Wait for flash to be ready
@@ -50,7 +50,7 @@ bool Flash_Write_App(uint8_t *data, uint32_t length) {
     FLASH->CR |= FLASH_CR_PG;                        // Enable Programming
 
     uint32_t *src = (uint32_t *)data;                // Cast buffer to 32-bit words
-    volatile uint32_t *dst = (volatile uint32_t *)APP_ADDRESS; //[cite: 3]
+    volatile uint32_t *dst = (volatile uint32_t *)APP_ADDRESS; 
     
     // Calculate total 64-bit chunks (round up)
     uint32_t double_words = (length + 7) / 8;
