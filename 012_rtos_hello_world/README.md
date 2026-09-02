@@ -1,0 +1,7 @@
+# Notes
+
+- This program is (**ONCE AGAIN**) just a blinky, but this time, with **FreeRTOS**. This means transition from infinite loop to more *OS*-like experience, where we declare tasks and run FreeRTOS scheduler to take care of the program loop for us -- since we have only 1 task here (`vBlinkyTask`), it is rather convoluted way of doing this, especially since it requires including freeRTOS (in `freeRTOS` dir) and setting up config header `FreeRTOSConfig.h`.
+
+- Additionaly, changes were made to the main cross-compilation macro in `Makefile` -- it is no longer impossible to compile with `nostdlib`, as FreeRTOS uses some functions, for example `memset`. To solve this without needing to link whole standard library, we use `-specs=nano.specs --specs=nosys.specs` to link Newlib-nano instead of standard newlib and remove system hooks dependencies. Additionally, `-nostartfiles` is used so I can keep the names of the sections in my linker and custom `startup.c`. Speaking of `startup.c`, it is mostly the same, BUT we now always require at least 3 handlers to be passed to the FreeRTOS, so it can function properly and do the scheduling. The handlers in question are `vPortSVCHandler`, `xPortPendSVHandler`, and `xPortSysTickHandler`.
+
+> Note: FPU support was also added with `-mcpu=cortex-m4 -mfloat-abi=hard` flags
