@@ -15,6 +15,7 @@ static uint8_t *draw_buffer = buffer_A;
 void DD_Init()
 {
     OLED_HW_Init(); // Calls SPI_Init, OLED_Init, DMA_Init internally
+    xTaskNotifyGive(xTaskGetCurrentTaskHandle());
 }
 
 uint32_t dd_euclidian_distance(int ax, int ay, int bx, int by)
@@ -205,8 +206,8 @@ void dd_draw_rect(int x, int y, int width, int height, bool state)
 void dd_update()
 {
     // Hand the CURRENT draw buffer to the DMA
-    OLED_Update_DMA(draw_buffer);
     ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+    OLED_Update_DMA(draw_buffer);
     // Swap the draw buffer for the NEXT frame
     draw_buffer = (draw_buffer == buffer_A) ? buffer_B : buffer_A;
 }
