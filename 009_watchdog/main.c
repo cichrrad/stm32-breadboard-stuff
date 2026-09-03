@@ -1,5 +1,5 @@
-#include "device_drivers/gpio.h"
-#include "device_drivers/tick_engine/systick_timer.h"
+#include "gpio.h"
+#include "systick_timer.h"
 
 static uint8_t frame[1024];
 

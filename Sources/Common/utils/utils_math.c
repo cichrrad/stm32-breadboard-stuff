@@ -27,7 +27,10 @@ uint32_t int_sqrt(uint32_t num)
     return res;
 }
 
-uint32_t abs(int32_t v)
+// THIS CANNOT BE NAMED ABS, BECAUSE WITH RTOS, IT PULLS IN STDLIB ABS AND GCC
+// SLIDES IN ITS __buildin_abs WHICH ASSUMES DIFFERENT BEHAVIOR WITH UNARY MINUS
+// (This was hell to find)
+uint32_t dd_abs(int32_t v)
 {
     return v < 0 ? -v : v;
 }

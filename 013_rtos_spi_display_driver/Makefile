@@ -1,4 +1,4 @@
-OUT_NAME=rtos_hello_world
+OUT_NAME=rtos_display_driver
 
 SRCS := $(wildcard *.c) \
         $(shell find ../Sources/SourceRTOS -name "*.c") \

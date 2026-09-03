@@ -1,10 +1,14 @@
 OUT_NAME=spi_oled
 BAUD_RATE=115200
 
+# Target specific files to dodge conflicts
 SRCS := $(wildcard *.c) \
-        ../Source/device_drivers/gpio.c
+        $(shell find ../Sources/SourceBM/device_drivers/gpio -name "*.c") \
+        $(shell find ../Sources/Common -name "*.c")
 
-INC_DIRS := $(shell find ../Include -type d)
+INC_DIRS := $(shell find ../Includes/IncludeBM/device_drivers/gpio -type d) \
+			$(shell find ../Includes/Common -type d)
+			
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
 build:

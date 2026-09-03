@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-#include "device_headers/stm32g491xx.h"
+#include "cmsis_headers/stm32g491xx.h"
 
 
 /**

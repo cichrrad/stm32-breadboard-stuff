@@ -1,6 +1,6 @@
-#include "device_headers/stm32g491xx.h"
-#include "device_drivers/gpio.h"
-#include "device_drivers/tick_engine/systick_timer.h"
+#include "stm32g491xx.h"
+#include "gpio.h"
+#include "systick_timer.h"
 #include "spi_dma.h"
 #include "usart_dma.h"
 

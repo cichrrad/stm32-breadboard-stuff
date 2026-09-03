@@ -1,10 +1,13 @@
 OUT_NAME=bad_apple
 
 SRCS := $(wildcard *.c) \
-        ../Source/device_drivers/*.c \
-		../Source/device_drivers/tick_engine/*.c
+		$(shell find ../Sources/Common -name "*.c") \
+        ../Sources/SourceBM/device_drivers/gpio/*.c \
+		../Sources/SourceBM/device_drivers/tick_engine/*.c
 
-INC_DIRS := $(shell find ../Include -type d)
+INC_DIRS := $(shell find ../Includes/IncludeBM -type d) \
+			$(shell find ../Includes/Common -type d)
+
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
 build:

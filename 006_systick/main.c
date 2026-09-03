@@ -1,5 +1,5 @@
-#include "device_drivers/gpio.h"
-#include "device_headers/stm32g491xx.h"
+#include "gpio.h"
+#include "cmsis_headers/stm32g491xx.h"
 #include <stdint.h>
 
 volatile uint32_t sys_ticks = 0;

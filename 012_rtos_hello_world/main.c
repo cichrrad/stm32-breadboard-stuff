@@ -1,5 +1,6 @@
 #include <stdint.h>
-#include "device_drivers/gpio.h"
+#include "gpio.h"
+
 #include "FreeRTOS.h"
 #include "task.h"
 
@@ -38,14 +39,11 @@ int main(void)
     xTaskCreate(vBlinkyTask, "Blinky", configMINIMAL_STACK_SIZE, NULL, 1, NULL);
 
     // spin up FreeRTOS
-    // This should never return
     vTaskStartScheduler();
 
-    // this should be unreachable
+    // We should never reach here
     while (1)
-    {
-        // Zzzzz
-    };
+        ;
 
     return 0;
 }

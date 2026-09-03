@@ -1,7 +1,7 @@
 #ifndef DEVICE_DRIVERS_GPIO_H
 #define DEVICE_DRIVERS_GPIO_H
 #include <stdint.h>
-#include "device_headers/stm32g491xx.h"
+#include "cmsis_headers/stm32g491xx.h"
 
 // DEFINES
 // in safety-critical, this is discouraged because of lack of typecheck etc...

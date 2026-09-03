@@ -2,9 +2,12 @@ OUT_NAME=gpio_driver
 BAUD_RATE=115200
 
 SRCS := $(wildcard *.c) \
-        $(shell find ../Source -name "*.c")
+        $(shell find ../Sources/SourceBM -name "*.c") \
+        $(shell find ../Sources/Common -name "*.c")
 
-INC_DIRS := $(shell find ../Include -type d)
+INC_DIRS := $(shell find ../Includes/IncludeBM -type d) \
+			$(shell find ../Includes/Common -type d)
+			
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
 build:

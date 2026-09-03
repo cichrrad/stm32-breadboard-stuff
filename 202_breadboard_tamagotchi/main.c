@@ -1,6 +1,6 @@
-#include "device_drivers/gpio.h"
-#include "device_drivers/display_driver/ddriver.h"
-#include "device_drivers/tick_engine/systick_timer.h"
+#include "gpio.h"
+#include "ddriver.h"
+#include "systick_timer.h"
 
 #include "local_source/input_driver/input_driver.h"
 #include "local_source/pet/pet.h"
@@ -46,7 +46,7 @@ int main(void)
         .bored_change_factor = 50,
         .alone_change_factor = 50,
 
-        .food_change_time_ms = 2700000,
+        .food_change_time_ms = 270000,
         .bored_change_time_ms = 900000,
         .alone_change_time_ms = 1800000,
 

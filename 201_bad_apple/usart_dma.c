@@ -1,5 +1,5 @@
 #include "usart_dma.h"
-#include "device_headers/stm32g491xx.h"
+#include "cmsis_headers/stm32g491xx.h"
 
 #define RX_BUF_SIZE 8240 // 8 frames worth of ring buffer
 

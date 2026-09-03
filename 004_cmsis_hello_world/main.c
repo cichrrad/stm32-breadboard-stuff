@@ -2,7 +2,7 @@
 // structs overlaying the memory to align
 // with registers using CMSIS
 // (Common Microcontroller Software Interface Standard)
-#include "../Include/device_headers/stm32g491xx.h"
+#include "../Includes/Common/cmsis_headers/stm32g491xx.h"
 
 // NOTE - under the hood, CMSIS works
 // very similar to structs in 002,

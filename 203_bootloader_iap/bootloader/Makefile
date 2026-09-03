@@ -1,10 +1,13 @@
 OUT_NAME=bootloader_iap
 
 SRCS := $(wildcard *.c) \
-        $(shell find ../../Source -name "*.c") \
-        $(shell find ./local_source -name "*.c") \
+        $(shell find ../../Sources/SourceBM -name "*.c") \
+        $(shell find ../../Sources/Common -name "*.c") \
+        $(shell find ./local_source -name "*.c")
 
-INC_DIRS := $(shell find ../../Include -type d)
+INC_DIRS := $(shell find ../../Includes/IncludeBM -type d) \
+			$(shell find ../../Includes/Common -type d)
+			
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
 build:

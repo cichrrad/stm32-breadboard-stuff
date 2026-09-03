@@ -1,7 +1,10 @@
 #include "ddriver.h"
 #include "oled_hw.h"
-#include "utils/utils_math.h"
-#include "device_drivers/display_driver/fonts.h"
+#include "utils_math.h"
+#include "fonts.h"
+
+#include "FreeRTOS.h"
+#include "task.h"
 
 static uint8_t buffer_A[DD_FB_SIZE] = {0};
 static uint8_t buffer_B[DD_FB_SIZE] = {0};
@@ -69,8 +72,8 @@ void dd_draw_bitmap(int x, int y, int width, int height, const uint8_t *bitmap, 
 // https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
 void dd_draw_line(int ax, int ay, int bx, int by, bool state)
 {
-    int dx = abs(bx - ax);
-    int dy = -abs(by - ay);
+    int dx = dd_abs(bx - ax);
+    int dy = -dd_abs(by - ay);
     int sx = ax < bx ? 1 : -1;
     int sy = ay < by ? 1 : -1;
     int err = dx + dy;
@@ -201,13 +204,9 @@ void dd_draw_rect(int x, int y, int width, int height, bool state)
 
 void dd_update()
 {
-    // Wait for the previous frame to finish transmitting if needed
-    while (dma_busy)
-        ;
-
     // Hand the CURRENT draw buffer to the DMA
     OLED_Update_DMA(draw_buffer);
-
+    ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
     // Swap the draw buffer for the NEXT frame
     draw_buffer = (draw_buffer == buffer_A) ? buffer_B : buffer_A;
 }

@@ -1,7 +1,7 @@
 #include "stm32g491xx.h"
-#include "device_drivers/display_driver/ddriver.h"
-#include "device_drivers/display_driver/ui_widgets.h"
-#include "device_drivers/tick_engine/systick_timer.h"
+#include "ddriver.h"
+#include "ui_widgets.h"
+#include "systick_timer.h"
 #include "miky_bitmap.h"
 
 #include <stdint.h>
@@ -52,6 +52,14 @@ int main(void)
             // dd_fill_rect(0, 0, DD_WIDTH, DD_HEIGHT, true);
             lbar.val += (10 % 255);
             ui_draw_loadbar(&lbar);
+            dd_fill_triangle(64,32,100,55,90,21,true);
+            dd_fill_circle(64,32,5,true);
+            dd_fill_circle(100,55,5,true);
+            dd_fill_circle(90,21,5,true);
+
+                    dd_draw_line(5,5,45,45,true);
+        dd_draw_line(5,45,45,5,true);
+
             dd_update();
         }
         __WFI();

@@ -1,4 +1,4 @@
-#include "device_drivers/gpio.h"
+#include "gpio.h"
 
 void EXTI0_IRQHandler(void) {
     // Check if the interrupt came from EXTI Line 0

@@ -1,10 +1,15 @@
 OUT_NAME=systick_blinky
 BAUD_RATE=115200
 
+# TARGET COMPILE ONLY WHAT WE NEED TO DODGE FILE NAMES CONFLICT 
+# WITH SysTick
 SRCS := $(wildcard *.c) \
-		../Source/device_drivers/*.c
+        $(shell find ../Sources/SourceBM/device_drivers/gpio -name "*.c") \
+        $(shell find ../Sources/Common -name "*.c")
 
-INC_DIRS := $(shell find ../Include -type d)
+INC_DIRS := $(shell find ../Includes/IncludeBM/device_drivers/gpio -type d) \
+			$(shell find ../Includes/Common -type d)
+			
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
 build:

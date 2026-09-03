@@ -1,7 +1,7 @@
 #include "stm32g491xx.h"
-#include "device_drivers/display_driver/ddriver.h"
-#include "device_drivers/display_driver/ui_widgets.h"
-#include "device_drivers/tick_engine/systick_timer.h"
+#include "ddriver.h"
+#include "ui_widgets.h"
+#include "systick_timer.h"
 #include "local_source/i2c_sensor.h"
 
 #include <stdint.h>
