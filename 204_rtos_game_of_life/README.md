@@ -1,6 +1,8 @@
 # NOTE
 
-WIP -- now it all runs in one task, making it rather pointless to use RTOS -- SPLIT UP
+WIP -- TODO 
+
+> Note: with `-O3` it currently hits ~40FPS with very naive approach, so thats cool!
 
 ## DEMO
 
