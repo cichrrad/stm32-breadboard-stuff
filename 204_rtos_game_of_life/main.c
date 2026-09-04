@@ -81,19 +81,25 @@ void vRenderTask(void *pvParameters)
 
     xTaskNotifyGive(xComputeTaskHandle);
 
+    TickType_t xLastWakeTime = xTaskGetTickCount();
+    const TickType_t xFrequency = pdMS_TO_TICKS(67); // ~15FPS target
+    // (Last time I checked, we can push 60+ FPS, but with
+    // speed being tied to FPS, it becomes worse than better
+    // to watch)
+
     while (1)
     {
         // Blocks this task until compute task is done
         // calculating frame
         xSemaphoreTake(xFrameReadySemaphore, portMAX_DELAY);
-        
+
         // Notify compute task to start on next frame
         // while this one is being rendered
         xTaskNotifyGive(xComputeTaskHandle);
-        // (this can be done right away, as 
+        // (this can be done right away, as
         // compute task and render task
         // will both just read the old gen.)
-        
+
         dd_clear();
 
         // UI FPS calculation
@@ -128,8 +134,7 @@ void vRenderTask(void *pvParameters)
 
         // Start sending with DMA via SPI to the display
         dd_update();
-        // ~ 20FPS
-        vTaskDelay(pdTICKS_TO_MS(17));
+        vTaskDelayUntil(&xLastWakeTime, xFrequency);
     }
 }
 

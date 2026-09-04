@@ -184,13 +184,6 @@ void DMA1_Channel1_IRQHandler(void)
 {
     if (DMA1->ISR & DMA_ISR_TCIF1)
     {
-        // Wait for SPI to finish physically shifting out the last bit!
-        while ((SPI1->SR & SPI_SR_BSY))
-            ;
-
-        // Deselect the display
-        GPIOB->BSRR = GPIO_BSRR_BS6; // CS High
-
         // Clear ALL interrupt flags for Channel 1 to prevent IRQ loops
         DMA1->IFCR = DMA_IFCR_CGIF1;
 

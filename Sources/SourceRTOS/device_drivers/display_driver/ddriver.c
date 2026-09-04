@@ -2,6 +2,7 @@
 #include "oled_hw.h"
 #include "utils_math.h"
 #include "fonts.h"
+#include "stm32g491xx.h"
 
 #include "FreeRTOS.h"
 #include "task.h"
@@ -207,6 +208,12 @@ void dd_update()
 {
     // Hand the CURRENT draw buffer to the DMA
     ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+
+    // check if very last bit from last 
+    // transmition was sent already
+    while ((SPI1->SR & SPI_SR_BSY));
+    GPIOB->BSRR = GPIO_BSRR_BS6;
+
     OLED_Update_DMA(draw_buffer);
     // Swap the draw buffer for the NEXT frame
     draw_buffer = (draw_buffer == buffer_A) ? buffer_B : buffer_A;
