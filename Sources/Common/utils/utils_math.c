@@ -1,6 +1,6 @@
 #include "utils_math.h"
 
-uint32_t int_sqrt(uint32_t num)
+uint32_t utils_sqrt(uint32_t num)
 {
     uint32_t res = 0;
     uint32_t bit = 1 << 30; // The second-to-top bit (for 32-bit unsigned ints)
@@ -30,12 +30,12 @@ uint32_t int_sqrt(uint32_t num)
 // THIS CANNOT BE NAMED ABS, BECAUSE WITH RTOS, IT PULLS IN STDLIB ABS AND GCC
 // SLIDES IN ITS __buildin_abs WHICH ASSUMES DIFFERENT BEHAVIOR WITH UNARY MINUS
 // (This was hell to find)
-uint32_t dd_abs(int32_t v)
+uint32_t utils_abs(int32_t v)
 {
     return v < 0 ? -v : v;
 }
 
-int32_t max3(int32_t a, int32_t b, int32_t c)
+int32_t utils_max3(int32_t a, int32_t b, int32_t c)
 {
     if (a >= b){
         if (a >=c){
@@ -50,7 +50,7 @@ int32_t max3(int32_t a, int32_t b, int32_t c)
     return c;
 }
 
-int32_t min3(int32_t a, int32_t b, int32_t c)
+int32_t utils_min3(int32_t a, int32_t b, int32_t c)
 {
     if (a <= b){
         if (a <=c){

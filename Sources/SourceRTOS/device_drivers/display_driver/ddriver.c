@@ -23,7 +23,7 @@ uint32_t dd_euclidian_distance(int ax, int ay, int bx, int by)
     uint32_t x = (ax - bx) * (ax - bx);
     uint32_t y = (ay - by) * (ay - by);
 
-    return int_sqrt(x + y);
+    return utils_sqrt(x + y);
 }
 
 void dd_set_pixel(int x, int y, bool state)
@@ -73,8 +73,8 @@ void dd_draw_bitmap(int x, int y, int width, int height, const uint8_t *bitmap, 
 // https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
 void dd_draw_line(int ax, int ay, int bx, int by, bool state)
 {
-    int dx = dd_abs(bx - ax);
-    int dy = -dd_abs(by - ay);
+    int dx = utils_abs(bx - ax);
+    int dy = -utils_abs(by - ay);
     int sx = ax < bx ? 1 : -1;
     int sy = ay < by ? 1 : -1;
     int err = dx + dy;
@@ -157,10 +157,10 @@ void dd_draw_triangle(int ax, int ay, int bx, int by, int cx, int cy, bool state
 
 void dd_fill_triangle(int ax, int ay, int bx, int by, int cx, int cy, bool state)
 {
-    int minX = min3(ax, bx, cx);
-    int minY = min3(ay, by, cy);
-    int maxX = max3(ax, bx, cx);
-    int maxY = max3(ay, by, cy);
+    int minX = utils_min3(ax, bx, cx);
+    int minY = utils_min3(ay, by, cy);
+    int maxX = utils_max3(ax, bx, cx);
+    int maxY = utils_max3(ay, by, cy);
 
     // Scan bounding box and check edge functions
     for (int y = minY; y <= maxY; y++)
