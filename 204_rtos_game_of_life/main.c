@@ -4,7 +4,6 @@
 #include "gpio.h"
 #include "ddriver.h"
 #include "ui_widgets.h"
-#include "utils_rng.h"
 
 #include "local_source/compute.h"
 
