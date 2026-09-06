@@ -18,4 +18,4 @@ This program uses FreeRTOS to run Conway's Game of Life and display it on an OLE
 
 ## Overview & Architecture
 
-TODO - Write out
+TODO - Write out in detail

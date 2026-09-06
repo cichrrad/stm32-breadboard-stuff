@@ -36,5 +36,9 @@ SECTIONS
     *(COMMON)
     . = ALIGN(4);
     _ebss = .;         /* End of .bss in RAM */
+    /* Standard library heap tracking symbols */
+    end = .;
+    _end = .;
+    __end__ = .;
   } > RAM
 }
