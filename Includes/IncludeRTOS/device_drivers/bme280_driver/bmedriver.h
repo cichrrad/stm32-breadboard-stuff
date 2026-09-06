@@ -5,9 +5,9 @@
 
 
 typedef struct {
-    int32_t temperature;
-    uint32_t pressure;
-    uint32_t humidity;
+    volatile int32_t temperature;
+    volatile uint32_t pressure;
+    volatile uint32_t humidity;
 } BME280_Data;
 
 void BME280_Init(void);
