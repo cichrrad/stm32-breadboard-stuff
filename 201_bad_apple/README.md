@@ -2,6 +2,10 @@
 
 This program streams `.mp4` file from your computer to the board via USART2, and from there the board sends the frames to a 128x64 monochrome OLED display via SPI.
 
+## DEMO
+
+![demo_video](./assets/bad_apple_demo.gif)
+
 ## Architecture & Pipeline
 
 The system is designed as a non-blocking, interrupt-driven pipeline where the CPU acts strictly as a high-level overseer.
@@ -61,11 +65,6 @@ To make sure we dont try to send another frame, while mid-transfer of the previo
 1. Flash the compiled `.elf` to the STM32 using the provided custom Makefile and OpenOCD.
 2. Install Python dependencies (inside `venv` or not, I am not your mom): `pip install opencv-python-headless pyserial numpy`.
 3. Run `python3 streamer.py` to begin streaming the video.
-
-
-## DEMO
-
-![demo_video](./assets/bad_apple_demo.gif)
 
 ---
 
