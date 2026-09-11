@@ -20,5 +20,5 @@
         }
     },
     
-    "postCreateCommand": "sudo apt-get update && sudo apt-get install -y gcc-arm-none-eabi gdb-multiarch build-essential cmake make openocd stlink-tools"
+    "postCreateCommand": "sudo apt-get update && sudo apt-get install -y gcc-arm-none-eabi gdb-multiarch build-essential cmake make openocd stlink-tools ruby ruby-dev && sudo gem install ceedling --no-document"
 }
