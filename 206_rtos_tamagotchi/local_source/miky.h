@@ -2,6 +2,7 @@
 
 #define MIKY_HEIGHT 48
 #define MIKY_WIDTH 72
+#define MIKY_EMOTIONS_COUNT 11
 
 // array size is 432
 const uint8_t excited[]  = {

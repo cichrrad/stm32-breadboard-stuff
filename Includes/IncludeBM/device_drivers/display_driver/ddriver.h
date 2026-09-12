@@ -1,5 +1,5 @@
 #ifndef DDRIVER_H
-#define DDDRIVER_H
+#define DDRIVER_H
 
 #include <stdint.h>
 #include <stdbool.h>
