@@ -37,14 +37,17 @@ uint32_t utils_abs(int32_t v)
 
 int32_t utils_max3(int32_t a, int32_t b, int32_t c)
 {
-    if (a >= b){
-        if (a >=c){
+    if (a >= b)
+    {
+        if (a >= c)
+        {
             return a;
         }
         return c;
     }
-    
-    if (b >= c){
+
+    if (b >= c)
+    {
         return b;
     }
     return c;
@@ -52,15 +55,28 @@ int32_t utils_max3(int32_t a, int32_t b, int32_t c)
 
 int32_t utils_min3(int32_t a, int32_t b, int32_t c)
 {
-    if (a <= b){
-        if (a <=c){
+    if (a <= b)
+    {
+        if (a <= c)
+        {
             return a;
         }
         return c;
     }
-    
-    if (b <= c){
+
+    if (b <= c)
+    {
         return b;
     }
     return c;
+}
+
+int32_t utils_min(int32_t a, int32_t b)
+{
+    return (a <= b ? a : b);
+}
+
+int32_t utils_max(int32_t a, int32_t b)
+{
+    return (a >= b ? a : b);
 }

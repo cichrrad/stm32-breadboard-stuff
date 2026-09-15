@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <float.h>
 
 #define PET_MAX_STAT_VALUE 255
 #define PET_MIN_STAT_VALUE 0
@@ -43,9 +44,9 @@ typedef struct {
     uint8_t bored_change_factor;
     uint8_t alone_change_factor;
     
-    uint32_t food_change_time_ms;
-    uint32_t bored_change_time_ms;
-    uint32_t alone_change_time_ms;
+    uint32_t food_change_time_ticks;
+    uint32_t bored_change_time_ticks;
+    uint32_t alone_change_time_ticks;
 
     uint32_t last_time_fed;
     uint32_t last_time_played_with;
@@ -58,5 +59,8 @@ typedef struct {
 
     bool alive;
 } Pet;
+
+void Pet_Calculate_Emotion(Pet* p);
+void Pet_Update_Stats(Pet *p);
 
 #endif
