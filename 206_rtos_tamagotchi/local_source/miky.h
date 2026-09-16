@@ -1,3 +1,6 @@
+#ifndef MIKY_H
+#define MIKY_H
+
 #include <stdint.h>
 
 #define MIKY_HEIGHT 48
@@ -588,3 +591,6 @@ const uint8_t* const miky_emotions[] = {
     rip,
     sad
 };
+
+
+#endif

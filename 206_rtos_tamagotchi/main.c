@@ -14,6 +14,7 @@
 #include "local_source/miky.h"
 #include "local_source/ui_banner.h"
 #include "local_source/pet/pet.h"
+#include "local_source/input/input.h"
 
 // Target ~24FPS
 #define UI_REFRESH_RATE_MS 42
@@ -27,15 +28,15 @@
 #define PET_VIEWPORT_X 28
 #define PET_VIEWPORT_Y 16
 
-typedef enum
-{
-    INPUT_BTN1 = 0,
-    INPUT_BTN2,
-    INPUT_BTN3,
-    INPUTS_COUNT
-} GameInput;
-
 QueueHandle_t xInputQueue;
+
+static const InputMapping idle_input_mapping = {
+    .inputs = {INPUT_BTN1, INPUT_BTN2, INPUT_BTN3},
+    .actions = {(actionFn)Pet_Play, (actionFn)Pet_Feed, (actionFn)Pet_Pet}};
+
+static const InputMapping in_game_input_mapping = {
+    .inputs = {INPUT_BTN1, INPUT_BTN2, INPUT_BTN3},
+    .actions = {(actionFn)Pet_Play, (actionFn)Pet_Feed, (actionFn)Pet_Pet}};
 
 static Pet Miky = {
     .food = PET_MAX_STAT_VALUE,
@@ -50,9 +51,9 @@ static Pet Miky = {
     .bored_change_factor = 50,
     .alone_change_factor = 50,
 
-    .food_change_time_ticks = TICKS_PER_SECOND * 300,
-    .bored_change_time_ticks = TICKS_PER_SECOND * 300,
-    .alone_change_time_ticks = TICKS_PER_SECOND * 300,
+    .food_change_time_ticks = TICKS_PER_SECOND * 3,
+    .bored_change_time_ticks = TICKS_PER_SECOND * 3,
+    .alone_change_time_ticks = TICKS_PER_SECOND * 3,
 
     .last_time_fed = 0,
     .last_time_played_with = 0,
@@ -118,14 +119,18 @@ void vRenderTask(void *pvParameters)
         hbeat = !hbeat;
         if (Miky.alive)
         {
-
-            // draw top UI
-            dd_draw_bitmap(0, 0, UI_BANNER_WIDTH, UI_BANNER_HEIGHT, ui_banner, true);
-            // update values for ui
-            ui_draw_loadbar(&foodBar);
-            ui_draw_loadbar(&aloneBar);
-            ui_draw_loadbar(&boredBar);
-            dd_draw_bitmap(PET_VIEWPORT_X, PET_VIEWPORT_Y, MIKY_WIDTH, MIKY_HEIGHT, Miky.emotion_array[Miky.currentEmotion], true);
+            switch (Miky.currentActivity)
+            {
+            case ACTIVITY_IDLE:
+                // draw top UI
+                dd_draw_bitmap(0, 0, UI_BANNER_WIDTH, UI_BANNER_HEIGHT, ui_banner, true);
+                // update values for ui
+                ui_draw_loadbar(&foodBar);
+                ui_draw_loadbar(&aloneBar);
+                ui_draw_loadbar(&boredBar);
+                dd_draw_bitmap(PET_VIEWPORT_X, PET_VIEWPORT_Y, MIKY_WIDTH, MIKY_HEIGHT, Miky.emotion_array[Miky.currentEmotion], true);
+                break;
+            }
         }
         else
         {
@@ -147,24 +152,18 @@ void vGameUpdateTask(void *pvParameters)
 
     while (1)
     {
-        if (Miky.alive && Miky.currentActivity == ACTIVITY_IDLE)
+        if (Miky.alive)
         {
             // handle inputs (if there are some)
             while (xQueueReceive(xInputQueue, &currentInput, 0) == pdTRUE)
             {
-                switch (currentInput)
+                switch (Miky.currentActivity)
                 {
-                case INPUT_BTN1:
-                    Pet_Play(&Miky);
-                    break;
-                case INPUT_BTN2:
-                    Pet_Feed(&Miky);
-                    break;
-                case INPUT_BTN3:
-                    Pet_Pet(&Miky);
+                case ACTIVITY_IDLE:
+                    ((void (*)(Pet *))idle_input_mapping.actions[currentInput])(&Miky);
                     break;
                 default:
-                    // HUH?
+                    // HUH
                     break;
                 }
             }
