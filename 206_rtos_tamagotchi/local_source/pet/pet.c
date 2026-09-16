@@ -141,31 +141,28 @@ void Pet_Calculate_Emotion(Pet *p)
 
 void Pet_Update_Stats(Pet *p)
 {
-    if (p->currentActivity == ACTIVITY_IDLE)
+
+    p->last_time_fed++;
+    p->last_time_pet++;
+    p->last_time_played_with++;
+
+    if (p->last_time_fed == p->food_change_time_ticks)
     {
+        p->food -= utils_min(p->food, p->food_change_factor);
+        p->last_time_fed = 0;
+    }
 
-        p->last_time_fed++;
-        p->last_time_pet++;
-        p->last_time_played_with++;
+    if (p->last_time_pet == p->alone_change_time_ticks)
+    {
+        p->alone += utils_min(PET_MAX_STAT_VALUE - p->alone, p->alone_change_factor);
+        p->alone = utils_min(p->alone, PET_MAX_STAT_VALUE);
+        p->last_time_pet = 0;
+    }
 
-        if (p->last_time_fed == p->food_change_time_ticks)
-        {
-            p->food -= utils_min(p->food, p->food_change_factor);
-            p->last_time_fed = 0;
-        }
-
-        if (p->last_time_pet == p->alone_change_time_ticks)
-        {
-            p->alone += utils_min(PET_MAX_STAT_VALUE - p->alone, p->alone_change_factor);
-            p->alone = utils_min(p->alone, PET_MAX_STAT_VALUE);
-            p->last_time_pet = 0;
-        }
-
-        if (p->last_time_played_with == p->bored_change_time_ticks)
-        {
-            p->bored += utils_min(PET_MAX_STAT_VALUE - p->bored, p->bored_change_factor);
-            p->last_time_played_with = 0;
-        }
+    if (p->last_time_played_with == p->bored_change_time_ticks)
+    {
+        p->bored += utils_min(PET_MAX_STAT_VALUE - p->bored, p->bored_change_factor);
+        p->last_time_played_with = 0;
     }
 }
 
@@ -185,4 +182,5 @@ void Pet_Play(Pet *p)
 {
     p->bored -= utils_min(p->bored, p->bored_change_factor);
     p->last_time_played_with = 0;
+    p->currentActivity = ACTIVITY_IN_GAME;
 }
