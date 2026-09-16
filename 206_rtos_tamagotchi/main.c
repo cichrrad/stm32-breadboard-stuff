@@ -9,6 +9,7 @@
 
 #include "FreeRTOS.h"
 #include "task.h"
+#include "queue.h"
 
 #include "local_source/miky.h"
 #include "local_source/ui_banner.h"
@@ -20,9 +21,21 @@
 #define GAME_TICK_RATE_MS 20
 #define TICKS_PER_SECOND (1000UL / GAME_TICK_RATE_MS)
 
+#define INPUT_POLL_RATE_MS 10
+
 // UI Offsets
 #define PET_VIEWPORT_X 28
 #define PET_VIEWPORT_Y 16
+
+typedef enum
+{
+    INPUT_BTN1 = 0,
+    INPUT_BTN2,
+    INPUT_BTN3,
+    INPUTS_COUNT
+} GameInput;
+
+QueueHandle_t xInputQueue;
 
 static Pet Miky = {
     .food = PET_MAX_STAT_VALUE,
@@ -37,9 +50,9 @@ static Pet Miky = {
     .bored_change_factor = 50,
     .alone_change_factor = 50,
 
-    .food_change_time_ticks = TICKS_PER_SECOND,
-    .bored_change_time_ticks = TICKS_PER_SECOND,
-    .alone_change_time_ticks = TICKS_PER_SECOND,
+    .food_change_time_ticks = TICKS_PER_SECOND * 300,
+    .bored_change_time_ticks = TICKS_PER_SECOND * 300,
+    .alone_change_time_ticks = TICKS_PER_SECOND * 300,
 
     .last_time_fed = 0,
     .last_time_played_with = 0,
@@ -92,8 +105,7 @@ void vRenderTask(void *pvParameters)
         .y = 4,
         .fill_state = true,
         .solid_bg = false,
-        .val = "..."
-    };
+        .val = "..."};
 
     while (1)
     {
@@ -126,15 +138,37 @@ void vRenderTask(void *pvParameters)
     }
 };
 
+// TODO -- sync with render/input task
 void vGameUpdateTask(void *pvParameters)
 {
     TickType_t xLastWakeTime = xTaskGetTickCount();
     const TickType_t xFrequency = pdMS_TO_TICKS(GAME_TICK_RATE_MS);
+    GameInput currentInput;
 
     while (1)
     {
-        if (Miky.alive)
+        if (Miky.alive && Miky.currentActivity == ACTIVITY_IDLE)
         {
+            // handle inputs (if there are some)
+            while (xQueueReceive(xInputQueue, &currentInput, 0) == pdTRUE)
+            {
+                switch (currentInput)
+                {
+                case INPUT_BTN1:
+                    Pet_Play(&Miky);
+                    break;
+                case INPUT_BTN2:
+                    Pet_Feed(&Miky);
+                    break;
+                case INPUT_BTN3:
+                    Pet_Pet(&Miky);
+                    break;
+                default:
+                    // HUH?
+                    break;
+                }
+            }
+
             Pet_Update_Stats(&Miky);
             Pet_Calculate_Emotion(&Miky);
         }
@@ -147,12 +181,87 @@ void vGameUpdateTask(void *pvParameters)
     }
 };
 
+void vInputHandlerTask(void *pvParameters)
+{
+    // setup buttons
+    // Enable GPIOA and GPIOB clocks
+    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN | RCC_AHB2ENR_GPIOBEN;
+
+    // PA1 and PA4 to Input Mode (00)
+    GPIOA->MODER &= ~(GPIO_MODER_MODE1_Msk | GPIO_MODER_MODE4_Msk);
+    // PB0 to Input Mode (00)
+    GPIOB->MODER &= ~GPIO_MODER_MODE0_Msk;
+
+    // Enable Pull-up resistors (01)
+    GPIOA->PUPDR &= ~(GPIO_PUPDR_PUPD1_Msk | GPIO_PUPDR_PUPD4_Msk);
+    GPIOA->PUPDR |= (1 << GPIO_PUPDR_PUPD1_Pos) | (1 << GPIO_PUPDR_PUPD4_Pos);
+
+    GPIOB->PUPDR &= ~GPIO_PUPDR_PUPD0_Msk;
+    GPIOB->PUPDR |= (1 << GPIO_PUPDR_PUPD0_Pos);
+
+    TickType_t xLastWakeTime = xTaskGetTickCount();
+    const TickType_t xFrequency = pdMS_TO_TICKS(INPUT_POLL_RATE_MS);
+
+    // last 8 polls
+    uint8_t button1_history = 0xFF;
+    uint8_t button2_history = 0xFF;
+    uint8_t button3_history = 0xFF;
+
+    while (1)
+    {
+        // shift by 1 to make space for latest read, then read
+        // PA1
+        uint8_t pa1_val = (GPIOA->IDR & (1 << 1)) ? 1 : 0;
+        button1_history = (button1_history << 1) | pa1_val;
+        // PA4
+        uint8_t pa4_val = (GPIOA->IDR & (1 << 4)) ? 1 : 0;
+        button2_history = (button2_history << 1) | pa4_val;
+        // PB0
+        uint8_t pb0_val = (GPIOB->IDR & (1 << 0)) ? 1 : 0;
+        button3_history = (button3_history << 1) | pb0_val;
+
+        // look for 0x80 (1000 0000)
+        // -> means it was pressed and was
+        // held for last 7 polls + it filters
+        // bouncing, unless it takes 7 polls...
+        // (7*INPUT_POLL_RATE_MS ~ 70ms is never gonna
+        // happen for bounces)
+        GameInput input = INPUTS_COUNT;
+        if (button1_history == 0x80)
+        {
+            input = INPUT_BTN1;
+        }
+
+        if (button2_history == 0x80)
+        {
+            input = INPUT_BTN2;
+        }
+
+        if (button3_history == 0x80)
+        {
+            input = INPUT_BTN3;
+        }
+
+        if (input != INPUTS_COUNT)
+        {
+            xQueueSend(xInputQueue, &input, 0);
+        }
+
+        vTaskDelayUntil(&xLastWakeTime, xFrequency);
+    }
+}
+
 int main(void)
 {
 
     Miky.alive = true;
+    Miky.currentActivity = ACTIVITY_IDLE;
+    xInputQueue = xQueueCreate(5, sizeof(GameInput));
+
     xTaskCreate(vRenderTask, "RenderTask", 256, NULL, 2, NULL);
     xTaskCreate(vGameUpdateTask, "GameUpdateTask", 256, NULL, 1, NULL);
+    xTaskCreate(vInputHandlerTask, "InputHandlerTask", 256, NULL, 3, NULL);
+
     vTaskStartScheduler();
 
     while (1)

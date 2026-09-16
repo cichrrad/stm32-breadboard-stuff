@@ -63,4 +63,8 @@ typedef struct {
 void Pet_Calculate_Emotion(Pet* p);
 void Pet_Update_Stats(Pet *p);
 
+void Pet_Feed(Pet *p);
+void Pet_Pet(Pet* p);
+void Pet_Play(Pet* p);
+
 #endif
