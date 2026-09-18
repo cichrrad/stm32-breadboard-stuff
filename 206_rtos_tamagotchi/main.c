@@ -15,7 +15,6 @@
 #include "local_source/ui_banner.h"
 #include "local_source/pet/pet.h"
 #include "local_source/input/input.h"
-#include "local_source/game_fp/game_fp.h"
 
 // Target ~24FPS
 #define UI_REFRESH_RATE_MS 42
@@ -34,10 +33,6 @@ QueueHandle_t xInputQueue;
 static const InputMapping idle_input_mapping = {
     .inputs = {INPUT_BTN1, INPUT_BTN2, INPUT_BTN3},
     .actions = {(actionFn)Pet_Play, (actionFn)Pet_Feed, (actionFn)Pet_Pet}};
-
-static const InputMapping in_game_input_mapping = {
-    .inputs = {INPUT_BTN1, INPUT_BTN2, INPUT_BTN3},
-    .actions = {(actionFn)jump, (actionFn)jump, (actionFn)jump}};
 
 static Pet Miky = {
     .food = PET_MAX_STAT_VALUE,
@@ -65,24 +60,6 @@ static Pet Miky = {
     .emotion_array = miky_emotions,
     .currentEmotion = EMOTION_HAPPY,
     .alive = false};
-
-PlayerFlappyBird FlappyBirdPlayer = {
-    .dy = 0,
-    .jump_momentum = 3,
-    .x = 36,
-    .y = 24};
-
-GameStateFlappyBird FlappyBirdGame = {
-    .running = false,
-    .score = 0,
-    .gravity = 1,
-    .pipe_min_width = 0,
-    .pipe_max_width = 0,
-    .gap_min_width = 0,
-    .gap_max_width = 0,
-    .tick_count = 0,
-    .slide_after_ticks = TICKS_PER_SECOND};
-ObjectPipeFlappyBird FlappyBirdPipes[FLAPPY_BIRD_MAX_PIPES];
 
 // NOTE: This task cannot be notified via basic
 // task notify, because display driver reservers this
@@ -150,12 +127,10 @@ void vRenderTask(void *pvParameters)
                 dd_draw_bitmap(PET_VIEWPORT_X, PET_VIEWPORT_Y, MIKY_WIDTH, MIKY_HEIGHT, Miky.emotion_array[Miky.currentEmotion], true);
                 break;
             case ACTIVITY_IN_GAME:
-                ui_draw_string(&ui_text, "FLAPPY BIRD");
+                ui_draw_string(&ui_text, "TODO ADD GAME");
                 dd_fill_rect(0, 16, 128, 42, false);
                 dd_fill_rect(0, 16, 28, 48, true);
                 dd_fill_rect(100, 16, 28, 48, true);
-
-                dd_draw_circle(FlappyBirdPlayer.x + 28, FlappyBirdPlayer.y + 16, 2, true);
                 break;
             }
         }
@@ -188,13 +163,8 @@ void vGameUpdateTask(void *pvParameters)
                 {
                 case ACTIVITY_IDLE:
                     ((void (*)(Pet *))idle_input_mapping.actions[currentInput])(&Miky);
-                    if (Miky.currentActivity == ACTIVITY_IN_GAME)
-                    {
-                        FlappyBirdGame.running = true;
-                    }
                     break;
                 case ACTIVITY_IN_GAME:
-                    ((void (*)(PlayerFlappyBird *))in_game_input_mapping.actions[currentInput])(&FlappyBirdPlayer);
                     break;
                 default:
                     // HUH
@@ -209,11 +179,6 @@ void vGameUpdateTask(void *pvParameters)
                 Pet_Calculate_Emotion(&Miky);
                 break;
             case ACTIVITY_IN_GAME:
-                gameTick(&FlappyBirdPlayer, &FlappyBirdGame);
-                if (!FlappyBirdGame.running)
-                {
-                    Miky.currentActivity = ACTIVITY_IDLE;
-                }
                 break;
             default:
                 break;
