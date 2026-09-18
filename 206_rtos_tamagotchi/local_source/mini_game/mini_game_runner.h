@@ -28,4 +28,11 @@ typedef struct
     GameInstance_t games[MINI_GAME_COUNT];
 } MiniGameRunner_t;
 
+GameInstance_t* mgr_get_current_game_instance(MiniGameRunner_t* runner);
+void mgr_run_minigame(MiniGameRunner_t* runner, Minigame_t game);
+bool mgr_is_running(MiniGameRunner_t* runner);
+void mgr_call_initFn(MiniGameRunner_t* runner);
+void mgr_call_updateFn(MiniGameRunner_t* runner);
+void mgr_call_renderFn(MiniGameRunner_t* runner);
+
 #endif

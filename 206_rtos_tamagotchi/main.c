@@ -139,8 +139,8 @@ void vRenderTask(void *pvParameters)
                 dd_draw_bitmap(PET_VIEWPORT_X, PET_VIEWPORT_Y, MIKY_WIDTH, MIKY_HEIGHT, Miky.emotion_array[Miky.currentEmotion], true);
                 break;
             case ACTIVITY_IN_GAME:
-                if(MiniGameRunner.running){
-                    MiniGameRunner.games[MiniGameRunner.currentMinigame].renderFn();
+                if(mgr_is_running(&MiniGameRunner)){
+                    mgr_call_renderFn(&MiniGameRunner);
                 }
                 break;
             }
@@ -176,7 +176,7 @@ void vGameUpdateTask(void *pvParameters)
                     ((void (*)(Pet *))idle_input_mapping.actions[currentInput])(&Miky);
                     break;
                 case ACTIVITY_IN_GAME:
-                    MiniGameRunner.games[MiniGameRunner.currentMinigame].im.actions[currentInput]();
+                    mgr_get_current_game_instance(&MiniGameRunner)->im.actions[currentInput]();
                     break;
                 default:
                     // HUH
