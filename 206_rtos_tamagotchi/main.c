@@ -15,6 +15,8 @@
 #include "local_source/ui_banner.h"
 #include "local_source/pet/pet.h"
 #include "local_source/input/input.h"
+#include "local_source/mini_game/mini_game_runner.h"
+#include "local_source/mini_game/rps/rps.h"
 
 // Target ~24FPS
 #define UI_REFRESH_RATE_MS 42
@@ -33,6 +35,10 @@ QueueHandle_t xInputQueue;
 static const InputMapping idle_input_mapping = {
     .inputs = {INPUT_BTN1, INPUT_BTN2, INPUT_BTN3},
     .actions = {(actionFn)Pet_Play, (actionFn)Pet_Feed, (actionFn)Pet_Pet}};
+
+static const InputMapping rps_inputMapping = {
+    .inputs = {INPUT_BTN1, INPUT_BTN2, INPUT_BTN3},
+    .actions = {rps_select_rock, rps_select_paper, rps_select_scissors}};
 
 static Pet Miky = {
     .food = PET_MAX_STAT_VALUE,
@@ -60,6 +66,12 @@ static Pet Miky = {
     .emotion_array = miky_emotions,
     .currentEmotion = EMOTION_HAPPY,
     .alive = false};
+
+MiniGameRunner_t MiniGameRunner = {
+    .running = false,
+    .currentMinigame = MINI_GAME_COUNT,
+    .games = {
+        {.initFn = rps_initFns, .renderFn = rps_renderFn, .updateFn = rps_updateFn, .im = rps_inputMapping}}};
 
 // NOTE: This task cannot be notified via basic
 // task notify, because display driver reservers this
@@ -127,10 +139,9 @@ void vRenderTask(void *pvParameters)
                 dd_draw_bitmap(PET_VIEWPORT_X, PET_VIEWPORT_Y, MIKY_WIDTH, MIKY_HEIGHT, Miky.emotion_array[Miky.currentEmotion], true);
                 break;
             case ACTIVITY_IN_GAME:
-                ui_draw_string(&ui_text, "TODO ADD GAME");
-                dd_fill_rect(0, 16, 128, 42, false);
-                dd_fill_rect(0, 16, 28, 48, true);
-                dd_fill_rect(100, 16, 28, 48, true);
+                if(MiniGameRunner.running){
+                    MiniGameRunner.games[MiniGameRunner.currentMinigame].renderFn();
+                }
                 break;
             }
         }
@@ -165,6 +176,7 @@ void vGameUpdateTask(void *pvParameters)
                     ((void (*)(Pet *))idle_input_mapping.actions[currentInput])(&Miky);
                     break;
                 case ACTIVITY_IN_GAME:
+                    MiniGameRunner.games[MiniGameRunner.currentMinigame].im.actions[currentInput]();
                     break;
                 default:
                     // HUH
@@ -179,6 +191,11 @@ void vGameUpdateTask(void *pvParameters)
                 Pet_Calculate_Emotion(&Miky);
                 break;
             case ACTIVITY_IN_GAME:
+                if(MiniGameRunner.running == false){
+                    MiniGameRunner.running = true;
+                    MiniGameRunner.currentMinigame = MINI_GAME_RPS;
+                }
+                MiniGameRunner.games[MiniGameRunner.currentMinigame].updateFn();
                 break;
             default:
                 break;
