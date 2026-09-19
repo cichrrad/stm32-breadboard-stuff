@@ -161,7 +161,7 @@ void rps_initFn(void)
     mcu_score = 0;
 
     tick_counter = 0;
-    show_period_ticks = 50 * 5;
+    show_period_ticks = 50 * 3;
 }
 
 void rps_renderFn(void)
