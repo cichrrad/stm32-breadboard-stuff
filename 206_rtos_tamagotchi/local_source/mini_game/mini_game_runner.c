@@ -23,7 +23,7 @@ void mgr_call_initFn(MiniGameRunner_t *runner)
 
 void mgr_call_updateFn(MiniGameRunner_t *runner)
 {
-    runner->games[runner->currentMinigame].updateFn();
+    runner->games[runner->currentMinigame].updateFn(&(runner->games[runner->currentMinigame].exit_flag));
 }
 
 void mgr_call_renderFn(MiniGameRunner_t *runner)

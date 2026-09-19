@@ -7,6 +7,7 @@
 #include "input.h"
 
 typedef void (*fn)(void);
+typedef void(*ufn)(bool*);
 
 typedef enum
 {
@@ -16,9 +17,10 @@ typedef enum
 
 typedef struct {
     fn initFn;
-    fn updateFn;
+    ufn updateFn;
     fn renderFn;
     InputMapping im;
+    bool exit_flag;
 } GameInstance_t;
 
 typedef struct

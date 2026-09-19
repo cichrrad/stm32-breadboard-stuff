@@ -2,10 +2,12 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <float.h>
+#include <assert.h>
 
 #include "gpio.h"
 #include "ddriver.h"
 #include "ui_widgets.h"
+#include "utils_rng.h"
 
 #include "FreeRTOS.h"
 #include "task.h"
@@ -18,8 +20,7 @@
 #include "local_source/mini_game/mini_game_runner.h"
 #include "local_source/mini_game/rps/rps.h"
 
-// Target ~24FPS
-#define UI_REFRESH_RATE_MS 42
+#define UI_REFRESH_RATE_MS 20
 // Target 50 ticks/s
 #define GAME_TICK_RATE_MS 20
 #define TICKS_PER_SECOND (1000UL / GAME_TICK_RATE_MS)
@@ -30,15 +31,14 @@
 #define PET_VIEWPORT_X 28
 #define PET_VIEWPORT_Y 16
 
+// Define asserts
+static_assert(UI_REFRESH_RATE_MS >= GAME_TICK_RATE_MS, "Refresh Rate must be >= than Tick Rate");
+
 QueueHandle_t xInputQueue;
 
 static const InputMapping idle_input_mapping = {
     .inputs = {INPUT_BTN1, INPUT_BTN2, INPUT_BTN3},
     .actions = {(actionFn)Pet_Play, (actionFn)Pet_Feed, (actionFn)Pet_Pet}};
-
-static const InputMapping rps_inputMapping = {
-    .inputs = {INPUT_BTN1, INPUT_BTN2, INPUT_BTN3},
-    .actions = {rps_select_rock, rps_select_paper, rps_select_scissors}};
 
 static Pet Miky = {
     .food = PET_MAX_STAT_VALUE,
@@ -71,7 +71,20 @@ MiniGameRunner_t MiniGameRunner = {
     .running = false,
     .currentMinigame = MINI_GAME_COUNT,
     .games = {
-        {.initFn = rps_initFns, .renderFn = rps_renderFn, .updateFn = rps_updateFn, .im = rps_inputMapping}}};
+        // Rock-Paper-Scissors
+        {.initFn = rps_initFn,
+         .renderFn = rps_renderFn,
+         .updateFn = rps_updateFn,
+         .im =
+             {.inputs =
+                  {INPUT_BTN1,
+                   INPUT_BTN2,
+                   INPUT_BTN3},
+              .actions =
+                  {rps_select_paper,
+                   rps_select_rock,
+                   rps_select_scissors}},
+         .exit_flag = false}}};
 
 // NOTE: This task cannot be notified via basic
 // task notify, because display driver reservers this
@@ -139,7 +152,8 @@ void vRenderTask(void *pvParameters)
                 dd_draw_bitmap(PET_VIEWPORT_X, PET_VIEWPORT_Y, MIKY_WIDTH, MIKY_HEIGHT, Miky.emotion_array[Miky.currentEmotion], true);
                 break;
             case ACTIVITY_IN_GAME:
-                if(mgr_is_running(&MiniGameRunner)){
+                if (mgr_is_running(&MiniGameRunner))
+                {
                     mgr_call_renderFn(&MiniGameRunner);
                 }
                 break;
@@ -191,11 +205,29 @@ void vGameUpdateTask(void *pvParameters)
                 Pet_Calculate_Emotion(&Miky);
                 break;
             case ACTIVITY_IN_GAME:
-                if(MiniGameRunner.running == false){
-                    MiniGameRunner.running = true;
+                if (MiniGameRunner.running == false)
+                {
+                    // TODO -- here we would randomly select a game
                     MiniGameRunner.currentMinigame = MINI_GAME_RPS;
+                    mgr_call_initFn(&MiniGameRunner);
+                    // confirm it is false so we can catch end signal after
+                    // game
+                    mgr_get_current_game_instance(&MiniGameRunner)->exit_flag = false;
+                    MiniGameRunner.running = true;
+                    break;
                 }
-                MiniGameRunner.games[MiniGameRunner.currentMinigame].updateFn();
+
+                if (MiniGameRunner.running && mgr_get_current_game_instance(&MiniGameRunner)->exit_flag == true)
+                {
+                    Miky.currentActivity = ACTIVITY_IDLE;
+                    // to be sure
+                    mgr_call_initFn(&MiniGameRunner);
+                    MiniGameRunner.running = false;
+                    MiniGameRunner.currentMinigame = MINI_GAME_COUNT;
+                    break;
+                }
+
+                mgr_call_updateFn(&MiniGameRunner);
                 break;
             default:
                 break;
@@ -286,6 +318,8 @@ int main(void)
     Miky.alive = true;
     Miky.currentActivity = ACTIVITY_IDLE;
     xInputQueue = xQueueCreate(5, sizeof(GameInput));
+
+    RNG_Init();
 
     xTaskCreate(vRenderTask, "RenderTask", 256, NULL, 2, NULL);
     xTaskCreate(vGameUpdateTask, "GameUpdateTask", 256, NULL, 1, NULL);
