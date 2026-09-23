@@ -53,9 +53,9 @@ static Pet Miky = {
     .bored_change_factor = 50,
     .alone_change_factor = 50,
 
-    .food_change_time_ticks = TICKS_PER_SECOND * 3,
-    .bored_change_time_ticks = TICKS_PER_SECOND * 3,
-    .alone_change_time_ticks = TICKS_PER_SECOND * 3,
+    .food_change_time_ticks = TICKS_PER_SECOND * 360,
+    .bored_change_time_ticks = TICKS_PER_SECOND * 360,
+    .alone_change_time_ticks = TICKS_PER_SECOND * 360,
 
     .last_time_fed = 0,
     .last_time_played_with = 0,
@@ -84,7 +84,10 @@ MiniGameRunner_t MiniGameRunner = {
                   {rps_select_paper,
                    rps_select_rock,
                    rps_select_scissors}},
-         .exit_flag = false}}};
+         .exit_flag = false
+        }
+    }
+};
 
 // NOTE: This task cannot be notified via basic
 // task notify, because display driver reservers this
