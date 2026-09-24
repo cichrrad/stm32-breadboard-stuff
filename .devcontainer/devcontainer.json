@@ -9,6 +9,9 @@
         "source=/dev,target=/dev,type=bind"
     ],
     
+
+    "forwardPorts": [4840],
+
     "customizations": {
         "vscode": {
             "extensions": [
