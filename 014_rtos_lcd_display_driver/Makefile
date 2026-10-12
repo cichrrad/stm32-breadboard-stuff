@@ -1,10 +1,12 @@
 OUT_NAME=rtos_lcd_display_driver
 
 SRCS := $(wildcard *.c) \
+        $(shell find ./local_source -name "*.c") \
         $(shell find ../Sources/Common -name "*.c") \
         $(shell find ../FreeRTOS -name "*.c")
 
 INC_DIRS := . \
+			$(shell find ./local_source -type d) \
 			$(shell find ../Includes/Common -type d) \
 			$(shell find ../FreeRTOS -type d)
 			
